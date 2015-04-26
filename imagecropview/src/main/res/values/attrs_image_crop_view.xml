@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+    <declare-styleable name="ImageCropView">
+        <attr name="gridInnerStroke" format="dimension" />
+        <attr name="gridInnerColor" format="color" />
+        <attr name="setInnerGridMode" format="integer">
+            <enum name="off" value="0"/>
+            <enum name="on" value="1"/>
+        </attr>
+
+        <attr name="gridOuterStroke" format="dimension" />
+        <attr name="gridOuterColor" format="color" />
+        <attr name="setOuterGridMode" format="integer">
+            <enum name="off" value="0"/>
+            <enum name="on" value="1"/>
+        </attr>
+    </declare-styleable>
+    
+</resources>
