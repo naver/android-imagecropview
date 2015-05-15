@@ -42,6 +42,7 @@ public class CropActivity extends Activity {
     public static final String TAG = "CropActivity";
 
     private ImageCropView imageCropView;
+    private Bitmap bitmap;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -56,7 +57,7 @@ public class CropActivity extends Activity {
 
         Uri uri = i.getData();
 
-        Bitmap bitmap = DecodeUtils.decode(uri.toString(), imageWidth, imageHeight);
+        bitmap = DecodeUtils.decode(uri.toString(), imageWidth, imageHeight);
 
         imageCropView.setImageBitmap(bitmap);
 
@@ -66,7 +67,11 @@ public class CropActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "click 1 : 1");
-                imageCropView.setAspectRatio(1, 1);
+                if(isPossibleCrop(1,1)){
+                    imageCropView.setAspectRatio(1, 1);
+                } else {
+                    Toast.makeText(CropActivity.this,R.string.can_not_crop,Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -74,7 +79,11 @@ public class CropActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "click 3 : 4");
-                imageCropView.setAspectRatio(3, 4);
+                if(isPossibleCrop(3,4)){
+                    imageCropView.setAspectRatio(3, 4);
+                } else {
+                    Toast.makeText(CropActivity.this,R.string.can_not_crop,Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -82,7 +91,11 @@ public class CropActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "click 4 : 3");
-                imageCropView.setAspectRatio(4, 3);
+                if(isPossibleCrop(4,3)){
+                    imageCropView.setAspectRatio(4, 3);
+                } else {
+                    Toast.makeText(CropActivity.this,R.string.can_not_crop,Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -90,7 +103,11 @@ public class CropActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "click 16 : 9");
-                imageCropView.setAspectRatio(16, 9);
+                if(isPossibleCrop(16,9)){
+                    imageCropView.setAspectRatio(16, 9);
+                } else {
+                    Toast.makeText(CropActivity.this,R.string.can_not_crop,Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -98,7 +115,11 @@ public class CropActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "click 9 : 16");
-                imageCropView.setAspectRatio(9, 16);
+                if(isPossibleCrop(9,16)){
+                    imageCropView.setAspectRatio(9, 16);
+                } else {
+                    Toast.makeText(CropActivity.this,R.string.can_not_crop,Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -111,6 +132,16 @@ public class CropActivity extends Activity {
                 }
             }
         });
+    }
+
+    private boolean isPossibleCrop(int widthRatio, int heightRatio){
+        int bitmapWidth = bitmap.getWidth();
+        int bitmapHeight = bitmap.getHeight();
+        if(bitmapWidth < widthRatio && bitmapHeight < heightRatio){
+            return false;
+        } else {
+            return true;
+        }
     }
 
     public File bitmapConvertToFile(Bitmap bitmap) {
