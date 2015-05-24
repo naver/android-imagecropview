@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.naver.android.helloyako.imagecropsample.util;
+package com.naver.android.helloyako.imagecrop.util;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -32,9 +32,9 @@ import java.io.IOException;
 /**
  * Created by helloyako on 15. 4. 16..
  */
-public class DecodeUtils {
+public class BitmapLoadUtils {
 
-    private static final String TAG = "DecodeUtils";
+    private static final String TAG = "BitmapLoadUtils";
 
     public static Bitmap decode(String path, int reqWidth, int reqHeight) {
         if (path == null) {
@@ -58,7 +58,7 @@ public class DecodeUtils {
                 isSuccess = true;
                 decodeSampledBitmap = BitmapFactory.decodeFile(path, options);
             } catch (OutOfMemoryError ex) {
-                Log.w(TAG, "DecodeUtils decode OutOfMemoryError");
+                Log.w(TAG, "BitmapLoadUtils decode OutOfMemoryError");
                 options.inSampleSize = options.inSampleSize * 2;
                 isSuccess = false;
             }
@@ -94,7 +94,7 @@ public class DecodeUtils {
             }
             catch(OutOfMemoryError ex)
             {
-                // 메모리가 부족하여 회전을 시키지 못할 경우 그냥 원본을 반환합니다.
+                // if out of memory, return original bitmap
             }
         }
         return bitmap;
