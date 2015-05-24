@@ -31,10 +31,12 @@ import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.widget.ImageView;
 
 import com.naver.android.helloyako.imagecrop.R;
+import com.naver.android.helloyako.imagecrop.util.BitmapLoadUtils;
 import com.naver.android.helloyako.imagecrop.view.graphics.FastBitmapDrawable;
 
 import it.sephiroth.android.library.easing.Cubic;
@@ -114,6 +116,8 @@ public abstract class ImageCropViewBase extends ImageView{
     private Paint mGridOuterLinePaint;
     private int gridInnerMode;
     private int gridOuterMode;
+
+	private String imageFilePath;
 
 	public ImageCropViewBase(Context context) {
 		this(context, null);
@@ -380,17 +384,17 @@ public abstract class ImageCropViewBase extends ImageView{
     private void drawGrid(Canvas canvas){
         int index = 0;
         for(int i = 0; i < GRID_ROW_COUNT - 1; i++){
-            mPts[index++] = mCropRect.left;                                                                   //start Xi
-            mPts[index++] = (mCropRect.height() *  (((float)i+1.0f) / (float)GRID_ROW_COUNT)) + mCropRect.top;         //start Yi
-            mPts[index++] = mCropRect.right;                                                                  //stop  Xi
-            mPts[index++] = (mCropRect.height() *  (((float)i+1.0f) / (float)GRID_ROW_COUNT))+ mCropRect.top;          //stop  Yi
+            mPts[index++] = mCropRect.left;																				//start Xi
+            mPts[index++] = (mCropRect.height() *  (((float)i+1.0f) / (float)GRID_ROW_COUNT)) + mCropRect.top;			//start Yi
+            mPts[index++] = mCropRect.right;                    		                                            	//stop  Xi
+            mPts[index++] = (mCropRect.height() *  (((float)i+1.0f) / (float)GRID_ROW_COUNT))+ mCropRect.top;         	//stop  Yi
         }
 
         for(int i = 0; i < GRID_COLUMN_COUNT - 1; i++){
-            mPts[index++] = (mCropRect.width() *  (((float)i+1.0f) / (float)GRID_COLUMN_COUNT)) + mCropRect.left;       //start Xi
-            mPts[index++] = mCropRect.top;                                                                     //start Yi
+            mPts[index++] = (mCropRect.width() *  (((float)i+1.0f) / (float)GRID_COLUMN_COUNT)) + mCropRect.left;		//start Xi
+            mPts[index++] = mCropRect.top;                                                               			    //start Yi
             mPts[index++] = (mCropRect.width() *  (((float)i+1.0f) / (float)GRID_COLUMN_COUNT)) + mCropRect.left;       //stop  Xi
-            mPts[index++] = mCropRect.bottom;                                                                  //stop  Yi
+            mPts[index++] = mCropRect.bottom;                                                           			    //stop  Yi
         }
 
         if(gridInnerMode == GRID_ON) {
@@ -420,6 +424,13 @@ public abstract class ImageCropViewBase extends ImageView{
         resetDisplay();
     }
 
+	public void setImageFilePath(String imageFilePath){
+		this.imageFilePath = imageFilePath;
+		int reqSize = 1000;
+		Bitmap bitmap = BitmapLoadUtils.decode(imageFilePath, reqSize, reqSize);
+		setImageBitmap(bitmap);
+	}
+
 	@Override
 	public void setImageBitmap(final Bitmap bitmap) {
         float minScale = 1f;
@@ -429,9 +440,24 @@ public abstract class ImageCropViewBase extends ImageView{
         setImageBitmap(bitmap, m, minScale, maxScale);
 	}
 
-	public void setImageBitmap(final Bitmap bitmap, Matrix matrix, float min_zoom, float max_zoom) {
-		if (bitmap != null) setImageDrawable(new FastBitmapDrawable(bitmap), matrix, min_zoom, max_zoom);
-		else setImageDrawable(null, matrix, min_zoom, max_zoom);
+	public void setImageBitmap(final Bitmap bitmap, final Matrix matrix, final float min_zoom, final float max_zoom) {
+		final int viewWidth = getWidth();
+		if (viewWidth <= 0) {
+			mLayoutRunnable = new Runnable() {
+
+				@Override
+				public void run() {
+					setImageBitmap(bitmap, matrix, min_zoom, max_zoom);
+				}
+			};
+			return;
+		}
+
+		if (bitmap != null) {
+			setImageDrawable(new FastBitmapDrawable(bitmap), matrix, min_zoom, max_zoom);
+		} else {
+			setImageDrawable(null, matrix, min_zoom, max_zoom);
+		}
 	}
 
 	@Override
@@ -878,25 +904,25 @@ public abstract class ImageCropViewBase extends ImageView{
 		final double dy = distanceY;
 		final long startTime = System.currentTimeMillis();
 		mHandler.post(
-			new Runnable() {
+				new Runnable() {
 
-				double old_x = 0;
-				double old_y = 0;
+					double old_x = 0;
+					double old_y = 0;
 
-				@Override
-				public void run() {
-					long now = System.currentTimeMillis();
-					double currentMs = Math.min(durationMs, now - startTime);
-					double x = mEasing.easeOut(currentMs, 0, dx, durationMs);
-					double y = mEasing.easeOut(currentMs, 0, dy, durationMs);
-					panBy((x - old_x), (y - old_y));
-					old_x = x;
-					old_y = y;
-					if (currentMs < durationMs) {
-						mHandler.post(this);
+					@Override
+					public void run() {
+						long now = System.currentTimeMillis();
+						double currentMs = Math.min(durationMs, now - startTime);
+						double x = mEasing.easeOut(currentMs, 0, dx, durationMs);
+						double y = mEasing.easeOut(currentMs, 0, dy, durationMs);
+						panBy((x - old_x), (y - old_y));
+						old_x = x;
+						old_y = y;
+						if (currentMs < durationMs) {
+							mHandler.post(this);
+						}
 					}
 				}
-			}
 		);
 	}
 
@@ -938,21 +964,37 @@ public abstract class ImageCropViewBase extends ImageView{
 
     public Bitmap getCroppedImage() {
 
-        Bitmap originalBitmap = ((FastBitmapDrawable)getDrawable()).getBitmap();
+        Bitmap viewBitmap = getViewBitmap();
+		Bitmap originalBitmap = null;
 
         float scale = baseScale * getScale();
 
+		if(imageFilePath != null) {
+			DisplayMetrics metrics = getResources().getDisplayMetrics();
+			int imageWidth = (int) ((float) metrics.widthPixels / 1.5);
+			int imageHeight = (int) ((float) metrics.heightPixels / 1.5);
+			originalBitmap = BitmapLoadUtils.decode(imageFilePath, imageWidth, imageHeight);
+			scale = scale * ((float) viewBitmap.getWidth() / (float) originalBitmap.getWidth());
+		}
 
-        RectF viewImageRect = getBitmapRect();
+		RectF viewImageRect = getBitmapRect();
 
         final float x = Math.abs(viewImageRect.left - mCropRect.left) / scale;
         final float y = Math.abs(viewImageRect.top - mCropRect.top) / scale;
         final float actualCropWidth = mCropRect.width() / scale;
         final float actualCropHeight = mCropRect.height() / scale;
-        // Crop the subset from the original Bitmap.
 
-        final Bitmap croppedBitmap = Bitmap.createBitmap(originalBitmap, (int) x, (int) y, (int) actualCropWidth, (int) actualCropHeight);
+        final Bitmap croppedBitmap;
+		if(originalBitmap == null) {
+			croppedBitmap = Bitmap.createBitmap(viewBitmap, (int) x, (int) y, (int) actualCropWidth, (int) actualCropHeight);
+		} else {
+			croppedBitmap = Bitmap.createBitmap(originalBitmap, (int) x, (int) y, (int) actualCropWidth, (int) actualCropHeight);
+		}
 
         return croppedBitmap;
     }
+
+	public Bitmap getViewBitmap(){
+		return ((FastBitmapDrawable)getDrawable()).getBitmap();
+	}
 }
