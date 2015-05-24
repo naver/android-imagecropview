@@ -30,7 +30,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.naver.android.helloyako.imagecrop.view.ImageCropView;
-import com.naver.android.helloyako.imagecropsample.util.DecodeUtils;
+import com.naver.android.helloyako.imagecrop.util.BitmapLoadUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -42,7 +42,6 @@ public class CropActivity extends Activity {
     public static final String TAG = "CropActivity";
 
     private ImageCropView imageCropView;
-    private Bitmap bitmap;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -50,16 +49,18 @@ public class CropActivity extends Activity {
         setContentView(R.layout.activity_crop);
         imageCropView = (ImageCropView) findViewById(R.id.image);
 
-        DisplayMetrics metrics = getResources().getDisplayMetrics();
-        int imageWidth = (int) ( (float) metrics.widthPixels / 1.5 );
-        int imageHeight = (int) ( (float) metrics.heightPixels / 1.5 );
         Intent i = getIntent();
-
         Uri uri = i.getData();
 
-        bitmap = DecodeUtils.decode(uri.toString(), imageWidth, imageHeight);
+//        DisplayMetrics metrics = getResources().getDisplayMetrics();
+//        int imageWidth = (int) ( (float) metrics.widthPixels / 1.5 );
+//        int imageHeight = (int) ( (float) metrics.heightPixels / 1.5 );
+//
+//        bitmap = BitmapLoadUtils.decode(uri.toString(), imageWidth, imageHeight);
+//
+//        imageCropView.setImageBitmap(bitmap);
 
-        imageCropView.setImageBitmap(bitmap);
+        imageCropView.setImageFilePath(uri.toString());
 
         imageCropView.setAspectRatio(1,1);
 
@@ -135,8 +136,8 @@ public class CropActivity extends Activity {
     }
 
     private boolean isPossibleCrop(int widthRatio, int heightRatio){
-        int bitmapWidth = bitmap.getWidth();
-        int bitmapHeight = bitmap.getHeight();
+        int bitmapWidth = imageCropView.getViewBitmap().getWidth();
+        int bitmapHeight = imageCropView.getViewBitmap().getHeight();
         if(bitmapWidth < widthRatio && bitmapHeight < heightRatio){
             return false;
         } else {

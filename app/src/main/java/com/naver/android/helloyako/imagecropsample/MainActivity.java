@@ -29,14 +29,13 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.naver.android.helloyako.imagecropsample.util.DecodeUtils;
+import com.naver.android.helloyako.imagecrop.util.BitmapLoadUtils;
 
 
 public class MainActivity extends Activity {
@@ -59,9 +58,8 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        DisplayMetrics metrics = getResources().getDisplayMetrics();
-        imageWidth = (int) ( (float) metrics.widthPixels / 1.5 );
-        imageHeight = (int) ( (float) metrics.heightPixels / 1.5 );
+        imageWidth = 1000;
+        imageHeight = 1000;
 
         mGalleryButton = (Button) findViewById( R.id.button1 );
         mEditButton = (Button) findViewById( R.id.button2 );
@@ -106,7 +104,7 @@ public class MainActivity extends Activity {
             switch (requestCode) {
                 case ACTION_REQUEST_GALLERY:
                     Uri uri = data.getData();
-                    String filePath = DecodeUtils.getPathFromUri(this,uri);
+                    String filePath = BitmapLoadUtils.getPathFromUri(this, uri);
                     Uri filePathUri = Uri.parse(filePath);
                     loadAsync( filePathUri );
                     break;
@@ -209,7 +207,7 @@ public class MainActivity extends Activity {
 
             final int w = mImageContainer.getWidth();
             Log.d( TAG, "width: " + w );
-            bitmap = DecodeUtils.decode(mUri.toString(),imageWidth,imageHeight);
+            bitmap = BitmapLoadUtils.decode(mUri.toString(), imageWidth, imageHeight);
             return bitmap;
         }
 
