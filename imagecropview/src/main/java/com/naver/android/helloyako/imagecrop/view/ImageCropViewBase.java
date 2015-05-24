@@ -965,7 +965,7 @@ public abstract class ImageCropViewBase extends ImageView{
     public Bitmap getCroppedImage() {
 
         Bitmap viewBitmap = getViewBitmap();
-		Bitmap originalBitmap = null;
+		Bitmap sourceBitmap = viewBitmap;
 
         float scale = baseScale * getScale();
 
@@ -973,25 +973,34 @@ public abstract class ImageCropViewBase extends ImageView{
 			DisplayMetrics metrics = getResources().getDisplayMetrics();
 			int imageWidth = (int) ((float) metrics.widthPixels / 1.5);
 			int imageHeight = (int) ((float) metrics.heightPixels / 1.5);
-			originalBitmap = BitmapLoadUtils.decode(imageFilePath, imageWidth, imageHeight);
-			scale = scale * ((float) viewBitmap.getWidth() / (float) originalBitmap.getWidth());
+			sourceBitmap = BitmapLoadUtils.decode(imageFilePath, imageWidth, imageHeight);
+			scale = scale * ((float) viewBitmap.getWidth() / (float) sourceBitmap.getWidth());
 		}
 
 		RectF viewImageRect = getBitmapRect();
 
-        final float x = Math.abs(viewImageRect.left - mCropRect.left) / scale;
-        final float y = Math.abs(viewImageRect.top - mCropRect.top) / scale;
-        final float actualCropWidth = mCropRect.width() / scale;
-        final float actualCropHeight = mCropRect.height() / scale;
+        float x = Math.abs(viewImageRect.left - mCropRect.left) / scale;
+        float y = Math.abs(viewImageRect.top - mCropRect.top) / scale;
+        float actualCropWidth = mCropRect.width() / scale;
+        float actualCropHeight = mCropRect.height() / scale;
 
-        final Bitmap croppedBitmap;
-		if(originalBitmap == null) {
-			croppedBitmap = Bitmap.createBitmap(viewBitmap, (int) x, (int) y, (int) actualCropWidth, (int) actualCropHeight);
-		} else {
-			croppedBitmap = Bitmap.createBitmap(originalBitmap, (int) x, (int) y, (int) actualCropWidth, (int) actualCropHeight);
+		if(x < 0){
+			x = 0;
 		}
 
-        return croppedBitmap;
+		if(y < 0){
+			y = 0;
+		}
+
+		if( y + actualCropHeight > sourceBitmap.getHeight()){
+			actualCropHeight = sourceBitmap.getHeight() - y;
+		}
+
+		if( x + actualCropWidth > sourceBitmap.getWidth()){
+			actualCropWidth = sourceBitmap.getWidth() - x;
+		}
+
+        return Bitmap.createBitmap(sourceBitmap, (int) x, (int) y, (int) actualCropWidth, (int) actualCropHeight);
     }
 
 	public Bitmap getViewBitmap(){
