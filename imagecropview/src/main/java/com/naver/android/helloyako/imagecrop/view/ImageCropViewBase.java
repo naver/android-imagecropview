@@ -1006,4 +1006,14 @@ public abstract class ImageCropViewBase extends ImageView{
 	public Bitmap getViewBitmap(){
 		return ((FastBitmapDrawable)getDrawable()).getBitmap();
 	}
+
+	public void setGridInnerMode(int gridInnerMode) {
+		this.gridInnerMode = gridInnerMode;
+		invalidate();
+	}
+
+	public void setGridOuterMode(int gridOuterMode) {
+		this.gridOuterMode = gridOuterMode;
+		invalidate();
+	}
 }
