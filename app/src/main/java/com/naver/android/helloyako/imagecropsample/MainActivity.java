@@ -207,7 +207,7 @@ public class MainActivity extends Activity {
 
             final int w = mImageContainer.getWidth();
             Log.d( TAG, "width: " + w );
-            bitmap = BitmapLoadUtils.decode(mUri.toString(), imageWidth, imageHeight);
+            bitmap = BitmapLoadUtils.decode(mUri.toString(), imageWidth, imageHeight,true);
             return bitmap;
         }
 
