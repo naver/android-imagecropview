@@ -26,7 +26,7 @@ Android SDK Build-tools 21.1.2
 	}
 
 	dependencies {
-	    compile 'com.naver.android.helloyako:imagecropview:1.0.1'
+	    compile 'com.naver.android.helloyako:imagecropview:1.0.3'
 	}
 
 ## Demo
