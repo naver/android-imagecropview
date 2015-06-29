@@ -427,7 +427,7 @@ public abstract class ImageCropViewBase extends ImageView{
 	public void setImageFilePath(String imageFilePath){
 		this.imageFilePath = imageFilePath;
 		int reqSize = 1000;
-		Bitmap bitmap = BitmapLoadUtils.decode(imageFilePath, reqSize, reqSize);
+		Bitmap bitmap = BitmapLoadUtils.decode(imageFilePath, reqSize, reqSize, true);
 		setImageBitmap(bitmap);
 	}
 
