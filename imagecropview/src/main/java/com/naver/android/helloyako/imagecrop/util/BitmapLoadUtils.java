@@ -37,6 +37,10 @@ public class BitmapLoadUtils {
     private static final String TAG = "BitmapLoadUtils";
 
     public static Bitmap decode(String path, int reqWidth, int reqHeight) {
+        return decode(path,reqWidth,reqHeight,false);
+    }
+
+    public static Bitmap decode(String path, int reqWidth, int reqHeight, boolean useImageView) {
         if (path == null) {
             return null;
         }
@@ -46,7 +50,7 @@ public class BitmapLoadUtils {
         BitmapFactory.decodeFile(path,options);
 
         // Calculate inSampleSize
-        options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
+        options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight, useImageView);
 
         // Decode bitmap with inSampleSize set
         options.inJustDecodeBounds = false;
@@ -72,6 +76,7 @@ public class BitmapLoadUtils {
         int exifOrientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
         int rotationInDegrees = exifToDegrees(exifOrientation);
         return rotate(decodeSampledBitmap,rotationInDegrees);
+
     }
 
     public static Bitmap rotate(Bitmap bitmap, int degrees)
@@ -122,7 +127,7 @@ public class BitmapLoadUtils {
         }
     }
 
-    public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
+    private static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight, boolean useImageView) {
         // Raw height and width of image
         final int height = options.outHeight;
         final int width = options.outWidth;
@@ -138,6 +143,14 @@ public class BitmapLoadUtils {
             while ((halfHeight / inSampleSize) > reqHeight
                     && (halfWidth / inSampleSize) > reqWidth) {
                 inSampleSize *= 2;
+            }
+
+            if(useImageView){
+                final int maxTextureSize = GLUtils.getMaxTextureSize();
+                while ((height / inSampleSize) > maxTextureSize
+                        || (width / inSampleSize) > maxTextureSize) {
+                    inSampleSize *= 2;
+                }
             }
         }
 
