@@ -1,4 +1,5 @@
 # ImageCropView
+ImageCropView help you image crop in android platform.  
 ImageCropView crops image by moving image under fixed crop area like instagram and iOS.  
 Image zoom in/out is base on [sephiroth74's imageViewZoom](https://github.com/sephiroth74/ImageViewZoom).  
 Sample app is base on [aviary SDK sample](https://developers.aviary.com).
@@ -15,9 +16,9 @@ Android SDK Build-tools 21.1.2
 ## Usage
 ##### Maven
 	<dependency>
-	   <groupId&gt;com.naver.android.helloyako</groupId>
+	   <groupId>com.naver.android.helloyako</groupId>
 	   <artifactId>imagecropview</artifactId>
-	   <version>1.0.0</version>
+	   <version>1.0.3</version>
 	</dependency>
 
 ##### Gradle
