@@ -38,7 +38,7 @@ public class GLUtils {
         EGLConfig mEGLConfig;
         EGLContext mEGLContext;
         EGLSurface mEGLSurface;
-        GL10 mGL;
+//        GL10 mGL;
 
         // No error checking performed, minimum required code to elucidate logic
         mEGL = (EGL10) EGLContext.getEGL();
@@ -80,7 +80,7 @@ public class GLUtils {
         mEGLSurface = mEGL.eglCreatePbufferSurface(mEGLDisplay, mEGLConfig, attribList);
         mEGL.eglMakeCurrent(mEGLDisplay, mEGLSurface, mEGLSurface, mEGLContext);
 
-        mGL = (GL10) mEGLContext.getGL();
+//        mGL = (GL10) mEGLContext.getGL();
 
         int[] maxTextureSize = new int[1];
         GLES20.glGetIntegerv(GLES20.GL_MAX_TEXTURE_SIZE, maxTextureSize, 0);
