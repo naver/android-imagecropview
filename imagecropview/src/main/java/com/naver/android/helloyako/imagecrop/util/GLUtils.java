@@ -84,6 +84,11 @@ public class GLUtils {
 
         int[] maxTextureSize = new int[1];
         GLES20.glGetIntegerv(GLES20.GL_MAX_TEXTURE_SIZE, maxTextureSize, 0);
+
+        mEGL.eglDestroySurface(mEGLDisplay,mEGLSurface);
+        mEGL.eglDestroyContext(mEGLDisplay,mEGLContext);
+        mEGL.eglTerminate(mEGLDisplay);
+
         return maxTextureSize[0];
     }
 }
