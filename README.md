@@ -14,20 +14,13 @@ Android SDK Build-tools 21.1.2
 (You can change other sdk and build-tools)  
 
 ## Usage
-##### Maven
-	<dependency>
-	   <groupId>com.naver.android.helloyako</groupId>
-	   <artifactId>imagecropview</artifactId>
-	   <version>1.0.3</version>
-	</dependency>
-
 ##### Gradle
 	repositories {
 	    mavenCentral()
 	}
 
 	dependencies {
-	    compile 'com.naver.android.helloyako:imagecropview:1.0.3'
+	    compile 'com.naver.android.helloyako:imagecropview:1.0.5'
 	}
 
 ## Demo
