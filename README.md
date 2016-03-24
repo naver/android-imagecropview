@@ -7,6 +7,9 @@ Sample app is base on [aviary SDK sample](https://developers.aviary.com).
 ## Screenshot
 ![screenshot](doc/img/screenshot.png)
 
+- in [pholar](https://play.google.com/store/apps/details?id=com.naver.android.pholar)
+
+![screenshot](doc/img/pholar.gif)
 ## Installation
 [Android Studio](http://developer.android.com/sdk/index.html)  
 Android SDK 21  
