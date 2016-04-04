@@ -20,48 +20,66 @@
             imagecrop:gridOuterStroke="1dp"
             imagecrop:gridOuterColor="#ffffff"/>
     </FrameLayout>
-    <LinearLayout
+    <HorizontalScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center">
-        <Button
-            android:id="@+id/ratio11btn"
+        android:layout_height="wrap_content">
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="1:1"/>
+            android:orientation="horizontal"
+            android:gravity="center">
+            <Button
+                android:id="@+id/ratio11btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1:1"/>
 
-        <Button
-            android:id="@+id/ratio34btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="3:4"/>
+            <Button
+                android:id="@+id/ratio34btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="3:4"/>
 
-        <Button
-            android:id="@+id/ratio43btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="4:3"/>
+            <Button
+                android:id="@+id/ratio43btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="4:3"/>
 
-        <Button
-            android:id="@+id/ratio169btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="16:9"/>
+            <Button
+                android:id="@+id/ratio169btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="16:9"/>
 
-        <Button
-            android:id="@+id/ratio916btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="9:16"/>
+            <Button
+                android:id="@+id/ratio916btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="9:16"/>
 
 
-        <Button
-            android:id="@+id/crop_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="crop and save"/>
+            <Button
+                android:id="@+id/crop_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="crop"/>
 
-    </LinearLayout>
+            <Button
+                android:id="@+id/save_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="save"
+                android:onClick="onClickSaveButton"/>
+
+            <Button
+                android:id="@+id/restore_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="restore"
+                android:onClick="onClickRestoreButton"
+                android:enabled="false"/>
+        </LinearLayout>
+    </HorizontalScrollView>
 
 </LinearLayout>
