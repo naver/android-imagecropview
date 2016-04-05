@@ -42,6 +42,7 @@ public class CropActivity extends Activity {
     public static final String TAG = "CropActivity";
 
     private ImageCropView imageCropView;
+    private float[] positionInfo;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -186,6 +187,18 @@ public class CropActivity extends Activity {
         }
 
         return bitmapFile;
+    }
+
+    public void onClickSaveButton(View v) {
+        positionInfo = imageCropView.getPositionInfo();
+        View restoreButton = findViewById(R.id.restore_btn);
+        if (!restoreButton.isEnabled()) {
+            restoreButton.setEnabled(true);
+        }
+    }
+
+    public void onClickRestoreButton(View v) {
+        imageCropView.applyPositionInfo(positionInfo);
     }
 
 }
