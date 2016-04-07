@@ -19,7 +19,7 @@ Android SDK Build-tools 21.1.2
 ## Usage
 ##### Gradle
 	dependencies {
-	    compile 'com.naver.android.helloyako:imagecropview:1.0.5'
+	    compile 'com.naver.android.helloyako:imagecropview:1.1.0'
 	}
 	
 ## Grid Option
