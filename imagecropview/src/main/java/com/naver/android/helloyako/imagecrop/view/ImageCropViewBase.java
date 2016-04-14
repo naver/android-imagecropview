@@ -49,8 +49,6 @@ public abstract class ImageCropViewBase extends ImageView{
 		void onDrawableChanged(Drawable drawable);
 	}
 
-	;
-
 	public interface OnLayoutChangeListener {
 		void onLayoutChanged(boolean changed, int left, int top, int right, int bottom);
 	}
