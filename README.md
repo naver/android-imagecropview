@@ -1,4 +1,6 @@
 # ImageCropView
+[![Build Status](https://travis-ci.org/naver/android-imagecropview.svg?branch=master)](https://travis-ci.org/naver/android-imagecropview)  
+
 ImageCropView help you image crop in android platform.  
 ImageCropView crops image by moving image under fixed crop area like instagram and iOS.  
 Image zoom in/out is base on [sephiroth74's imageViewZoom](https://github.com/sephiroth74/ImageViewZoom).  
