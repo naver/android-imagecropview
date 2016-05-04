@@ -25,9 +25,9 @@ import static javax.microedition.khronos.egl.EGL10.EGL_WIDTH;
  * Created by helloyako on 15. 6. 19..
  */
 public class GLUtils {
-    public static int getMaxTextureSize(){
+    public static int getMaxTextureSize() {
         int[] version = new int[2];
-        int[] attribList = new int[] {
+        int[] attribList = new int[]{
                 EGL_WIDTH, 100,
                 EGL_HEIGHT, 100,
                 EGL_NONE
@@ -45,7 +45,7 @@ public class GLUtils {
         mEGLDisplay = mEGL.eglGetDisplay(EGL_DEFAULT_DISPLAY);
         mEGL.eglInitialize(mEGLDisplay, version);
 
-        int[] attribList1 = new int[] {
+        int[] attribList1 = new int[]{
                 EGL_DEPTH_SIZE, 0,
                 EGL_STENCIL_SIZE, 0,
                 EGL_RED_SIZE, 8,
@@ -85,8 +85,8 @@ public class GLUtils {
         int[] maxTextureSize = new int[1];
         GLES20.glGetIntegerv(GLES20.GL_MAX_TEXTURE_SIZE, maxTextureSize, 0);
 
-        mEGL.eglDestroySurface(mEGLDisplay,mEGLSurface);
-        mEGL.eglDestroyContext(mEGLDisplay,mEGLContext);
+        mEGL.eglDestroySurface(mEGLDisplay, mEGLSurface);
+        mEGL.eglDestroyContext(mEGLDisplay, mEGLContext);
         mEGL.eglTerminate(mEGLDisplay);
 
         return maxTextureSize[0];

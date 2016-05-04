@@ -37,7 +37,7 @@ public class BitmapLoadUtils {
     private static final String TAG = "BitmapLoadUtils";
 
     public static Bitmap decode(String path, int reqWidth, int reqHeight) {
-        return decode(path,reqWidth,reqHeight,false);
+        return decode(path, reqWidth, reqHeight, false);
     }
 
     public static Bitmap decode(String path, int reqWidth, int reqHeight, boolean useImageView) {
@@ -47,7 +47,7 @@ public class BitmapLoadUtils {
 
         final BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(path,options);
+        BitmapFactory.decodeFile(path, options);
 
         // Calculate inSampleSize
         options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight, useImageView);
@@ -57,7 +57,7 @@ public class BitmapLoadUtils {
 
         Bitmap decodeSampledBitmap = null;
         boolean isSuccess = false;
-        while(!isSuccess) {
+        while (!isSuccess) {
             try {
                 isSuccess = true;
                 decodeSampledBitmap = BitmapFactory.decodeFile(path, options);
@@ -70,35 +70,29 @@ public class BitmapLoadUtils {
         }
 
         ExifInterface exif = getExif(path);
-        if( exif == null){
+        if (exif == null) {
             return decodeSampledBitmap;
         }
         int exifOrientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
         int rotationInDegrees = exifToDegrees(exifOrientation);
-        return rotate(decodeSampledBitmap,rotationInDegrees);
+        return rotate(decodeSampledBitmap, rotationInDegrees);
 
     }
 
-    public static Bitmap rotate(Bitmap bitmap, int degrees)
-    {
-        if(degrees != 0 && bitmap != null)
-        {
+    public static Bitmap rotate(Bitmap bitmap, int degrees) {
+        if (degrees != 0 && bitmap != null) {
             Matrix m = new Matrix();
             m.setRotate(degrees, (float) bitmap.getWidth() / 2,
                     (float) bitmap.getHeight() / 2);
 
-            try
-            {
+            try {
                 Bitmap converted = Bitmap.createBitmap(bitmap, 0, 0,
                         bitmap.getWidth(), bitmap.getHeight(), m, true);
-                if(bitmap != converted)
-                {
+                if (bitmap != converted) {
                     bitmap.recycle();
                     bitmap = converted;
                 }
-            }
-            catch(OutOfMemoryError ex)
-            {
+            } catch (OutOfMemoryError ex) {
                 // if out of memory, return original bitmap
             }
         }
@@ -107,14 +101,14 @@ public class BitmapLoadUtils {
 
 
     public static String getPathFromUri(Context context, Uri uri) {
-        if(uri == null){
+        if (uri == null) {
             return null;
         }
         Cursor cursor = null;
         try {
-            String[] proj = { MediaStore.Images.Media.DATA };
-            cursor = context.getContentResolver().query(uri,  proj, null, null, null);
-            if(cursor == null){
+            String[] proj = {MediaStore.Images.Media.DATA};
+            cursor = context.getContentResolver().query(uri, proj, null, null, null);
+            if (cursor == null) {
                 return null;
             }
             int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
@@ -145,7 +139,7 @@ public class BitmapLoadUtils {
                 inSampleSize *= 2;
             }
 
-            if(useImageView){
+            if (useImageView) {
                 final int maxTextureSize = GLUtils.getMaxTextureSize();
                 while ((height / inSampleSize) > maxTextureSize
                         || (width / inSampleSize) > maxTextureSize) {
@@ -168,9 +162,13 @@ public class BitmapLoadUtils {
     }
 
     private static int exifToDegrees(int exifOrientation) {
-        if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_90) { return 90; }
-        else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_180) {  return 180; }
-        else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_270) {  return 270; }
+        if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_90) {
+            return 90;
+        } else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_180) {
+            return 180;
+        } else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_270) {
+            return 270;
+        }
         return 0;
     }
 }
