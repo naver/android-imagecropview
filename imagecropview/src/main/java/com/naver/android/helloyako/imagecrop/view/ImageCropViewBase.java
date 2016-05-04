@@ -39,6 +39,8 @@ import com.naver.android.helloyako.imagecrop.R;
 import com.naver.android.helloyako.imagecrop.util.BitmapLoadUtils;
 import com.naver.android.helloyako.imagecrop.view.graphics.FastBitmapDrawable;
 
+import java.io.File;
+
 import it.sephiroth.android.library.easing.Cubic;
 import it.sephiroth.android.library.easing.Easing;
 
@@ -423,6 +425,10 @@ public abstract class ImageCropViewBase extends ImageView{
     }
 
 	public void setImageFilePath(String imageFilePath){
+		File imageFile = new File(imageFilePath);
+		if(!imageFile.exists()){
+			throw new IllegalArgumentException("Image file does not exist");
+		}
 		this.imageFilePath = imageFilePath;
 		int reqSize = 1000;
 		Bitmap bitmap = BitmapLoadUtils.decode(imageFilePath, reqSize, reqSize, true);
