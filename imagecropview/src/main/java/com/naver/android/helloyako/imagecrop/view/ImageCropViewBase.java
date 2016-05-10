@@ -31,7 +31,6 @@ import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.util.AttributeSet;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.widget.ImageView;
 
@@ -967,10 +966,8 @@ public abstract class ImageCropViewBase extends ImageView {
         float scale = baseScale * getScale();
 
         if (imageFilePath != null) {
-            DisplayMetrics metrics = getResources().getDisplayMetrics();
-            int imageWidth = (int) ((float) metrics.widthPixels / 1.5);
-            int imageHeight = (int) ((float) metrics.heightPixels / 1.5);
-            sourceBitmap = BitmapLoadUtils.decode(imageFilePath, imageWidth, imageHeight);
+            int reqSize = 4000;
+            sourceBitmap = BitmapLoadUtils.decode(imageFilePath, reqSize, reqSize);
             scale = scale * ((float) viewBitmap.getWidth() / (float) sourceBitmap.getWidth());
         }
 
