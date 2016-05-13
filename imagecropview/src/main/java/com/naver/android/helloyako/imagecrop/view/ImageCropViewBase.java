@@ -35,6 +35,7 @@ import android.util.Log;
 import android.widget.ImageView;
 
 import com.naver.android.helloyako.imagecrop.R;
+import com.naver.android.helloyako.imagecrop.model.CropInfo;
 import com.naver.android.helloyako.imagecrop.util.BitmapLoadUtils;
 import com.naver.android.helloyako.imagecrop.view.graphics.FastBitmapDrawable;
 
@@ -959,42 +960,21 @@ public abstract class ImageCropViewBase extends ImageView {
     }
 
     public Bitmap getCroppedImage() {
-
-        Bitmap viewBitmap = getViewBitmap();
-        Bitmap sourceBitmap = viewBitmap;
-
-        float scale = baseScale * getScale();
+        CropInfo cropInfo = getCropInfo();
 
         if (imageFilePath != null) {
-            int reqSize = 4000;
-            sourceBitmap = BitmapLoadUtils.decode(imageFilePath, reqSize, reqSize);
-            scale = scale * ((float) viewBitmap.getWidth() / (float) sourceBitmap.getWidth());
+            return cropInfo.getCroppedImage(imageFilePath);
+        } else {
+            return cropInfo.getCroppedImage(getViewBitmap());
         }
+    }
 
+    public CropInfo getCropInfo() {
+        Bitmap viewBitmap = getViewBitmap();
+        float scale = baseScale * getScale();
         RectF viewImageRect = getBitmapRect();
 
-        float x = Math.abs(viewImageRect.left - mCropRect.left) / scale;
-        float y = Math.abs(viewImageRect.top - mCropRect.top) / scale;
-        float actualCropWidth = mCropRect.width() / scale;
-        float actualCropHeight = mCropRect.height() / scale;
-
-        if (x < 0) {
-            x = 0;
-        }
-
-        if (y < 0) {
-            y = 0;
-        }
-
-        if (y + actualCropHeight > sourceBitmap.getHeight()) {
-            actualCropHeight = sourceBitmap.getHeight() - y;
-        }
-
-        if (x + actualCropWidth > sourceBitmap.getWidth()) {
-            actualCropWidth = sourceBitmap.getWidth() - x;
-        }
-
-        return Bitmap.createBitmap(sourceBitmap, (int) x, (int) y, (int) actualCropWidth, (int) actualCropHeight);
+        return new CropInfo(scale, viewBitmap.getWidth(), viewImageRect.top, viewImageRect.left, mCropRect.top, mCropRect.left, mCropRect.width(), mCropRect.height());
     }
 
     public Bitmap getViewBitmap() {
