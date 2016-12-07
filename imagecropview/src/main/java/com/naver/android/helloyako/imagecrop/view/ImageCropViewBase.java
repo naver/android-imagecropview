@@ -47,15 +47,7 @@ import it.sephiroth.android.library.easing.Easing;
 
 public abstract class ImageCropViewBase extends ImageView {
 
-    public interface OnDrawableChangeListener {
-        void onDrawableChanged(Drawable drawable);
-    }
-
-    public interface OnLayoutChangeListener {
-        void onLayoutChanged(boolean changed, int left, int top, int right, int bottom);
-    }
-
-    public static final String LOG_TAG = "ImageViewTouchBase";
+    public static final String LOG_TAG = "ImageCropViewBase";
     protected static final boolean LOG_ENABLED = false;
 
     public static final float ZOOM_INVALID = -1f;
@@ -99,13 +91,10 @@ public abstract class ImageCropViewBase extends ImageView {
     protected RectF mScrollRect = new RectF();
     protected RectF mCropRect = new RectF();
 
-    private OnDrawableChangeListener mDrawableChangeListener;
-    private OnLayoutChangeListener mOnLayoutChangeListener;
-
     private Paint mTransparentLayerPaint;
 
-    private int mAspectRatioWidth = ImageCropViewBase.DEFAULT_ASPECT_RATIO_WIDTH;
-    private int mAspectRatioHeight = ImageCropViewBase.DEFAULT_ASPECT_RATIO_HEIGHT;
+    private int mAspectRatioWidth = DEFAULT_ASPECT_RATIO_WIDTH;
+    private int mAspectRatioHeight = DEFAULT_ASPECT_RATIO_HEIGHT;
 
     private float mTargetAspectRatio = mAspectRatioHeight / mAspectRatioWidth;
 
@@ -136,14 +125,6 @@ public abstract class ImageCropViewBase extends ImageView {
         return mBitmapChanged;
     }
 
-    public void setOnDrawableChangedListener(OnDrawableChangeListener listener) {
-        mDrawableChangeListener = listener;
-    }
-
-    public void setOnLayoutChangeListener(OnLayoutChangeListener listener) {
-        mOnLayoutChangeListener = listener;
-    }
-
     protected void init(Context context, AttributeSet attrs, int defStyle) {
 
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ImageCropView);
@@ -172,6 +153,8 @@ public abstract class ImageCropViewBase extends ImageView {
         int rowLineCount = (GRID_ROW_COUNT - 1) * 4;
         int columnLineCount = (GRID_COLUMN_COUNT - 1) * 4;
         mPts = new float[rowLineCount + columnLineCount];
+
+        a.recycle();
     }
 
     @Override
@@ -179,7 +162,7 @@ public abstract class ImageCropViewBase extends ImageView {
         if (scaleType == ScaleType.MATRIX) {
             super.setScaleType(scaleType);
         } else {
-            Log.w(LOG_TAG, "Unsupported scaletype. Only MATRIX can be used");
+            throw new IllegalArgumentException("Unsupported scaleType. Only ScaleType.MATRIX can be used");
         }
     }
 
@@ -193,7 +176,7 @@ public abstract class ImageCropViewBase extends ImageView {
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         if (LOG_ENABLED) {
-            Log.e(LOG_TAG, "onLayout: " + changed + ", bitmapChanged: " + mBitmapChanged + ", scaleChanged: " + mScaleTypeChanged);
+            Log.d(LOG_TAG, "onLayout: " + changed + ", bitmapChanged: " + mBitmapChanged + ", scaleChanged: " + mScaleTypeChanged);
         }
 
         super.onLayout(changed, left, top, right, bottom);
@@ -202,14 +185,14 @@ public abstract class ImageCropViewBase extends ImageView {
         int deltaY = 0;
 
         if (changed) {
-            int oldw = mThisWidth;
-            int oldh = mThisHeight;
+            int oldW = mThisWidth;
+            int oldH = mThisHeight;
 
             mThisWidth = right - left;
             mThisHeight = bottom - top;
 
-            deltaX = mThisWidth - oldw;
-            deltaY = mThisHeight - oldh;
+            deltaX = mThisWidth - oldW;
+            deltaY = mThisHeight - oldH;
 
             // update center point
             mCenter.x = mThisWidth / 2f;
@@ -248,22 +231,22 @@ public abstract class ImageCropViewBase extends ImageView {
                 float scale = 1;
 
                 // retrieve the old values
-                float old_matrix_scale = getScale(mBaseMatrix);
-                float old_scale = getScale();
-                float old_min_scale = Math.min(1f, 1f / old_matrix_scale);
+                float oldMatrixScale = getScale(mBaseMatrix);
+                float oldScale = getScale();
+                float oldMinScale = Math.min(1f, 1f / oldMatrixScale);
 
                 getProperBaseMatrix(drawable, mBaseMatrix);
 
                 float new_matrix_scale = getScale(mBaseMatrix);
 
                 if (LOG_ENABLED) {
-                    Log.d(LOG_TAG, "old matrix scale: " + old_matrix_scale);
+                    Log.d(LOG_TAG, "old matrix scale: " + oldMatrixScale);
                     Log.d(LOG_TAG, "new matrix scale: " + new_matrix_scale);
-                    Log.d(LOG_TAG, "old min scale: " + old_min_scale);
-                    Log.d(LOG_TAG, "old scale: " + old_scale);
+                    Log.d(LOG_TAG, "old min scale: " + oldMinScale);
+                    Log.d(LOG_TAG, "old scale: " + oldScale);
                 }
 
-                // 1. bitmap changed or scaletype changed
+                // 1. bitmap changed or scaleType changed
                 if (mBitmapChanged || mScaleTypeChanged) {
 
                     if (LOG_ENABLED) {
@@ -286,8 +269,8 @@ public abstract class ImageCropViewBase extends ImageView {
                     if (!mUserScaled) {
                         zoomTo(scale);
                     } else {
-                        if (Math.abs(old_scale - old_min_scale) > 0.001) {
-                            scale = (old_matrix_scale / new_matrix_scale) * old_scale;
+                        if (Math.abs(oldScale - oldMinScale) > 0.001) {
+                            scale = (oldMatrixScale / new_matrix_scale) * oldScale;
                         }
                         if (LOG_ENABLED) {
                             Log.v(LOG_TAG, "userScaled. scale=" + scale);
@@ -296,7 +279,7 @@ public abstract class ImageCropViewBase extends ImageView {
                     }
 
                     if (LOG_ENABLED) {
-                        Log.d(LOG_TAG, "old scale: " + old_scale);
+                        Log.d(LOG_TAG, "old scale: " + oldScale);
                         Log.d(LOG_TAG, "new scale: " + scale);
                     }
 
@@ -313,9 +296,6 @@ public abstract class ImageCropViewBase extends ImageView {
 
                 center(true, true);
 
-                if (mBitmapChanged) onDrawableChanged(drawable);
-                if (changed || mBitmapChanged || mScaleTypeChanged)
-                    onLayoutChanged(left, top, right, bottom);
 
                 if (mScaleTypeChanged) mScaleTypeChanged = false;
                 if (mBitmapChanged) mBitmapChanged = false;
@@ -325,11 +305,6 @@ public abstract class ImageCropViewBase extends ImageView {
                 }
             }
         } else {
-            // drawable is null
-            if (mBitmapChanged) onDrawableChanged(drawable);
-            if (changed || mBitmapChanged || mScaleTypeChanged)
-                onLayoutChanged(left, top, right, bottom);
-
             if (mBitmapChanged) mBitmapChanged = false;
             if (mScaleTypeChanged) mScaleTypeChanged = false;
 
@@ -531,33 +506,6 @@ public abstract class ImageCropViewBase extends ImageView {
 
         mBitmapChanged = true;
         requestLayout();
-    }
-
-    protected void onDrawableChanged(final Drawable drawable) {
-        if (LOG_ENABLED) {
-            Log.i(LOG_TAG, "onDrawableChanged");
-            Log.v(LOG_TAG, "scale: " + getScale() + ", minScale: " + getMinScale());
-        }
-        fireOnDrawableChangeListener(drawable);
-    }
-
-    protected void fireOnLayoutChangeListener(int left, int top, int right, int bottom) {
-        if (null != mOnLayoutChangeListener) {
-            mOnLayoutChangeListener.onLayoutChanged(true, left, top, right, bottom);
-        }
-    }
-
-    protected void fireOnDrawableChangeListener(Drawable drawable) {
-        if (null != mDrawableChangeListener) {
-            mDrawableChangeListener.onDrawableChanged(drawable);
-        }
-    }
-
-    protected void onLayoutChanged(int left, int top, int right, int bottom) {
-        if (LOG_ENABLED) {
-            Log.i(LOG_TAG, "onLayoutChanged");
-        }
-        fireOnLayoutChangeListener(left, top, right, bottom);
     }
 
     protected float computeMaxZoom() {

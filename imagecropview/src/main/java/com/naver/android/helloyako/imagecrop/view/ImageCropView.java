@@ -210,19 +210,15 @@ public class ImageCropView extends ImageCropViewBase {
         @Override
         public boolean onDoubleTap(MotionEvent e) {
             if (LOG_ENABLED) {
-                Log.i(LOG_TAG, "onDoubleTap. double tap enabled? " + mDoubleTapEnabled);
+                Log.d(LOG_TAG, "onDoubleTap. double tap enabled? " + mDoubleTapEnabled);
             }
             if (mDoubleTapEnabled) {
                 mUserScaled = true;
                 float scale = getScale();
                 float targetScale = scale;
-                Log.d(LOG_TAG, "targetScale : " + targetScale);
                 targetScale = onDoubleTapPost(scale, getMaxScale());
-                Log.d(LOG_TAG, "targetScale : " + targetScale);
                 targetScale = Math.min(getMaxScale(), Math.max(targetScale, getMinScale()));
-                Log.d(LOG_TAG, "targetScale : " + targetScale);
                 zoomTo(targetScale, e.getX(), e.getY(), DEFAULT_ANIMATION_DURATION);
-                Log.d(LOG_TAG, "targetScale : " + targetScale);
                 invalidate();
             }
 
