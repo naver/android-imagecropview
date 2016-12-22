@@ -109,6 +109,8 @@ public class ImageCropView extends ImageView {
     private Paint mGridOuterLinePaint;
     private int gridInnerMode;
     private int gridOuterMode;
+    private float gridLeftRightMargin;
+    private float gridTopBottomMargin;
 
     private String imageFilePath;
 
@@ -144,7 +146,7 @@ public class ImageCropView extends ImageView {
         return mBitmapChanged;
     }
 
-    protected void init(Context context, AttributeSet attrs, int defStyle) {
+    private void init(Context context, AttributeSet attrs, int defStyle) {
 
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ImageCropView);
 
@@ -168,6 +170,9 @@ public class ImageCropView extends ImageView {
 
         gridInnerMode = a.getInt(R.styleable.ImageCropView_setInnerGridMode, GRID_OFF);
         gridOuterMode = a.getInt(R.styleable.ImageCropView_setOuterGridMode, GRID_OFF);
+
+        gridLeftRightMargin = a.getDimension(R.styleable.ImageCropView_gridLeftRightMargin, 0);
+        gridTopBottomMargin = a.getDimension(R.styleable.ImageCropView_gridTopBottomMargin, 0);
 
         int rowLineCount = (GRID_ROW_COUNT - 1) * 4;
         int columnLineCount = (GRID_COLUMN_COUNT - 1) * 4;
@@ -229,12 +234,13 @@ public class ImageCropView extends ImageView {
 
         int height = (int) (mThisWidth * mTargetAspectRatio);
         if (height > mThisHeight) {
-            int width = (int) (mThisHeight / mTargetAspectRatio);
+            int width = (int) ((mThisHeight - (gridTopBottomMargin * 2)) / mTargetAspectRatio);
             int halfDiff = (mThisWidth - width) / 2;
-            mCropRect.set(left + halfDiff, top, right - halfDiff, bottom);
+            mCropRect.set(left + halfDiff, top + gridTopBottomMargin, right - halfDiff, bottom - gridTopBottomMargin);
         } else {
+            height = (int) ((mThisWidth - (gridLeftRightMargin * 2)) * mTargetAspectRatio);
             int halfDiff = (mThisHeight - height) / 2;
-            mCropRect.set(left, halfDiff - top, right, height + halfDiff);
+            mCropRect.set(left + gridLeftRightMargin, halfDiff - top, right - gridLeftRightMargin, height + halfDiff);
         }
 
         Runnable r = mLayoutRunnable;
@@ -376,26 +382,26 @@ public class ImageCropView extends ImageView {
         Rect r = new Rect();
         getLocalVisibleRect(r);
 
-        canvas.drawRect(r.left, r.top, r.right, mCropRect.top, mTransparentLayerPaint);                       // top
-        canvas.drawRect(r.left, mCropRect.bottom, mCropRect.right, r.bottom, mTransparentLayerPaint);         // bottom
-        canvas.drawRect(r.left, mCropRect.top, mCropRect.left, mCropRect.bottom, mTransparentLayerPaint);     // left
-        canvas.drawRect(mCropRect.right, mCropRect.top, r.right, mCropRect.bottom, mTransparentLayerPaint);   // right
+        canvas.drawRect(r.left, r.top, r.right, mCropRect.top, mTransparentLayerPaint);                          // top
+        canvas.drawRect(r.left, mCropRect.bottom, r.right, r.bottom, mTransparentLayerPaint);                    // bottom
+        canvas.drawRect(r.left, mCropRect.top, mCropRect.left, mCropRect.bottom, mTransparentLayerPaint);        // left
+        canvas.drawRect(mCropRect.right, mCropRect.top, r.right, mCropRect.bottom, mTransparentLayerPaint);      // right
     }
 
     private void drawGrid(Canvas canvas) {
         int index = 0;
         for (int i = 0; i < GRID_ROW_COUNT - 1; i++) {
-            mPts[index++] = mCropRect.left;                                                                                //start Xi
-            mPts[index++] = (mCropRect.height() * (((float) i + 1.0f) / (float) GRID_ROW_COUNT)) + mCropRect.top;            //start Yi
+            mPts[index++] = mCropRect.left;                                                                             //start Xi
+            mPts[index++] = (mCropRect.height() * (((float) i + 1.0f) / (float) GRID_ROW_COUNT)) + mCropRect.top;       //start Yi
             mPts[index++] = mCropRect.right;                                                                            //stop  Xi
-            mPts[index++] = (mCropRect.height() * (((float) i + 1.0f) / (float) GRID_ROW_COUNT)) + mCropRect.top;            //stop  Yi
+            mPts[index++] = (mCropRect.height() * (((float) i + 1.0f) / (float) GRID_ROW_COUNT)) + mCropRect.top;       //stop  Yi
         }
 
         for (int i = 0; i < GRID_COLUMN_COUNT - 1; i++) {
-            mPts[index++] = (mCropRect.width() * (((float) i + 1.0f) / (float) GRID_COLUMN_COUNT)) + mCropRect.left;        //start Xi
-            mPts[index++] = mCropRect.top;                                                                            //start Yi
-            mPts[index++] = (mCropRect.width() * (((float) i + 1.0f) / (float) GRID_COLUMN_COUNT)) + mCropRect.left;       //stop  Xi
-            mPts[index++] = mCropRect.bottom;                                                                        //stop  Yi
+            mPts[index++] = (mCropRect.width() * (((float) i + 1.0f) / (float) GRID_COLUMN_COUNT)) + mCropRect.left;    //start Xi
+            mPts[index++] = mCropRect.top;                                                                              //start Yi
+            mPts[index++] = (mCropRect.width() * (((float) i + 1.0f) / (float) GRID_COLUMN_COUNT)) + mCropRect.left;    //stop  Xi
+            mPts[index++] = mCropRect.bottom;                                                                           //stop  Yi
         }
 
         if (gridInnerMode == GRID_ON) {
