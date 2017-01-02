@@ -65,7 +65,7 @@ public class ImageCropView extends ImageView {
     protected Easing mEasing = new Cubic();
     protected Matrix mBaseMatrix = new Matrix();
     protected Matrix mSuppMatrix = new Matrix();
-    protected Matrix mNextMatrix;
+    protected final Matrix mDisplayMatrix = new Matrix();
     protected Handler mHandler = new Handler();
     protected Runnable mLayoutRunnable = null;
     protected boolean mUserScaled = false;
@@ -77,7 +77,6 @@ public class ImageCropView extends ImageView {
     private boolean mMaxZoomDefined;
     private boolean mMinZoomDefined;
 
-    protected final Matrix mDisplayMatrix = new Matrix();
     protected final float[] mMatrixValues = new float[9];
 
     private int mThisWidth = -1;
@@ -282,13 +281,7 @@ public class ImageCropView extends ImageView {
 
                 // 1. bitmap changed or scaleType changed
                 if (mBitmapChanged || mScaleTypeChanged) {
-
-                    if (LOG_ENABLED) {
-                        Log.d(LOG_TAG, "newMatrix: " + mNextMatrix);
-                    }
-
                     setImageMatrix(getImageViewMatrix());
-
                 } else if (changed) {
 
                     // 2. layout size changed
@@ -446,28 +439,26 @@ public class ImageCropView extends ImageView {
     public void setImageBitmap(final Bitmap bitmap) {
         float minScale = 1f;
         float maxScale = 8f;
-        Matrix m = new Matrix();
-        m.postScale(minScale, minScale);
-        setImageBitmap(bitmap, m, minScale, maxScale);
+        setImageBitmap(bitmap, minScale, maxScale);
     }
 
-    public void setImageBitmap(final Bitmap bitmap, final Matrix matrix, final float min_zoom, final float max_zoom) {
+    public void setImageBitmap(final Bitmap bitmap, final float min_zoom, final float max_zoom) {
         final int viewWidth = getWidth();
         if (viewWidth <= 0) {
             mLayoutRunnable = new Runnable() {
 
                 @Override
                 public void run() {
-                    setImageBitmap(bitmap, matrix, min_zoom, max_zoom);
+                    setImageBitmap(bitmap, min_zoom, max_zoom);
                 }
             };
             return;
         }
 
         if (bitmap != null) {
-            setImageDrawable(new FastBitmapDrawable(bitmap), matrix, min_zoom, max_zoom);
+            setImageDrawable(new FastBitmapDrawable(bitmap), min_zoom, max_zoom);
         } else {
-            setImageDrawable(null, matrix, min_zoom, max_zoom);
+            setImageDrawable(null, min_zoom, max_zoom);
         }
     }
 
@@ -475,12 +466,10 @@ public class ImageCropView extends ImageView {
     public void setImageDrawable(Drawable drawable) {
         float minScale = 1f;
         float maxScale = 8f;
-        Matrix m = new Matrix();
-        m.postScale(minScale, minScale);
-        setImageDrawable(drawable, m, minScale, maxScale);
+        setImageDrawable(drawable, minScale, maxScale);
     }
 
-    public void setImageDrawable(final Drawable drawable, final Matrix initial_matrix, final float min_zoom, final float max_zoom) {
+    public void setImageDrawable(final Drawable drawable, final float min_zoom, final float max_zoom) {
         final int viewWidth = getWidth();
 
         if (viewWidth <= 0) {
@@ -488,15 +477,15 @@ public class ImageCropView extends ImageView {
 
                 @Override
                 public void run() {
-                    setImageDrawable(drawable, initial_matrix, min_zoom, max_zoom);
+                    setImageDrawable(drawable, min_zoom, max_zoom);
                 }
             };
             return;
         }
-        _setImageDrawable(drawable, initial_matrix, min_zoom, max_zoom);
+        _setImageDrawable(drawable, min_zoom, max_zoom);
     }
 
-    protected void _setImageDrawable(final Drawable drawable, final Matrix initial_matrix, float min_zoom, float max_zoom) {
+    protected void _setImageDrawable(final Drawable drawable, float min_zoom, float max_zoom) {
 
         if (LOG_ENABLED) {
             Log.i(LOG_TAG, "_setImageDrawable");
@@ -528,10 +517,6 @@ public class ImageCropView extends ImageView {
 
             mMinZoomDefined = false;
             mMaxZoomDefined = false;
-        }
-
-        if (initial_matrix != null) {
-            mNextMatrix = new Matrix(initial_matrix);
         }
 
         if (LOG_ENABLED) {

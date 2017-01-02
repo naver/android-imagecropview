@@ -17,14 +17,10 @@
 
 package com.naver.android.helloyako.imagecrop.util;
 
-import android.content.Context;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
-import android.net.Uri;
-import android.provider.MediaStore;
 import android.util.Log;
 
 import java.io.IOException;
