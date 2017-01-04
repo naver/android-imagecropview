@@ -128,6 +128,10 @@ public class ImageCropView extends ImageView {
 
     private boolean isChangingScale = false;
 
+    private int savedAspectRatioWidth;
+    private int savedAspectRatioHeight;
+    private float[] suppMatrixValues = new float[9];
+
     public ImageCropView(Context context) {
         this(context, null);
     }
@@ -138,10 +142,10 @@ public class ImageCropView extends ImageView {
 
     public ImageCropView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        init(context, attrs, defStyle);
+        init(context, attrs);
     }
 
-    private void init(Context context, AttributeSet attrs, int defStyle) {
+    private void init(Context context, AttributeSet attrs) {
 
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ImageCropView);
 
@@ -176,8 +180,8 @@ public class ImageCropView extends ImageView {
         a.recycle();
 
         mTouchSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
-        mGestureListener = getGestureListener();
-        mScaleListener = getScaleListener();
+        mGestureListener = new GestureListener();
+        mScaleListener = new ScaleListener();
 
         mScaleDetector = new ScaleGestureDetector(getContext(), mScaleListener);
         mGestureDetector = new GestureDetector(getContext(), mGestureListener, null, true);
@@ -600,24 +604,6 @@ public class ImageCropView extends ImageView {
         return mDisplayMatrix;
     }
 
-    @Override
-    public void setImageMatrix(Matrix matrix) {
-
-        Matrix current = getImageMatrix();
-        boolean needUpdate = false;
-
-        if (matrix == null && !current.isIdentity() || matrix != null && !current.equals(matrix)) {
-            needUpdate = true;
-        }
-
-        super.setImageMatrix(matrix);
-
-        if (needUpdate) onImageMatrixChanged();
-    }
-
-    protected void onImageMatrixChanged() {
-    }
-
     private float baseScale = 1f;
 
     protected void getProperBaseMatrix(Drawable drawable, Matrix matrix) {
@@ -802,11 +788,7 @@ public class ImageCropView extends ImageView {
         float oldScale = getScale();
         float deltaScale = scale / oldScale;
         postScale(deltaScale, centerX, centerY);
-        onZoom(getScale());
         center(true, true);
-    }
-
-    protected void onZoom(float scale) {
     }
 
     protected void onZoomAnimationCompleted(float scale) {
@@ -967,10 +949,6 @@ public class ImageCropView extends ImageView {
         invalidate();
     }
 
-    int savedAspectRatioWidth;
-    int savedAspectRatioHeight;
-    float[] suppMatrixValues = new float[9];
-
     public void saveState() {
         savedAspectRatioWidth = mAspectRatioWidth;
         savedAspectRatioHeight = mAspectRatioHeight;
@@ -1014,14 +992,6 @@ public class ImageCropView extends ImageView {
 
     public boolean getDoubleTapEnabled() {
         return mDoubleTapEnabled;
-    }
-
-    protected GestureDetector.OnGestureListener getGestureListener() {
-        return new GestureListener();
-    }
-
-    protected ScaleGestureDetector.OnScaleGestureListener getScaleListener() {
-        return new ScaleListener();
     }
 
     @Override
@@ -1117,8 +1087,7 @@ public class ImageCropView extends ImageView {
             if (mDoubleTapEnabled) {
                 mUserScaled = true;
                 float scale = getScale();
-                float targetScale = scale;
-                targetScale = onDoubleTapPost(scale, getMaxScale());
+                float targetScale = onDoubleTapPost(scale, getMaxScale());
                 targetScale = Math.min(getMaxScale(), Math.max(targetScale, getMinScale()));
                 zoomTo(targetScale, e.getX(), e.getY(), DEFAULT_ANIMATION_DURATION);
                 invalidate();
@@ -1156,7 +1125,6 @@ public class ImageCropView extends ImageView {
 
             if (e1.getPointerCount() > 1 || e2.getPointerCount() > 1) return false;
             if (mScaleDetector.isInProgress()) return false;
-//			if (getScale() == 1f) return false;
 
             return ImageCropView.this.onFling(e1, e2, velocityX, velocityY);
         }
