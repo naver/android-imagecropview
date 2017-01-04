@@ -83,8 +83,8 @@ public class ImageCropView extends ImageView {
     private int mThisHeight = -1;
     private PointF mCenter = new PointF();
 
-    private boolean mScaleTypeChanged;
     private boolean mBitmapChanged;
+    private boolean mRestoreRequest;
 
     final protected int DEFAULT_ANIMATION_DURATION = 200;
     private static final String DEFAULT_BACKGROUND_COLOR_ID = "#99000000";
@@ -141,10 +141,6 @@ public class ImageCropView extends ImageView {
         init(context, attrs, defStyle);
     }
 
-    public boolean getBitmapChanged() {
-        return mBitmapChanged;
-    }
-
     private void init(Context context, AttributeSet attrs, int defStyle) {
 
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ImageCropView);
@@ -187,6 +183,9 @@ public class ImageCropView extends ImageView {
         mGestureDetector = new GestureDetector(getContext(), mGestureListener, null, true);
 
         mDoubleTapDirection = 1;
+
+        mBitmapChanged = false;
+        mRestoreRequest = false;
     }
 
     @Override
@@ -208,7 +207,7 @@ public class ImageCropView extends ImageView {
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         if (LOG_ENABLED) {
-            Log.d(LOG_TAG, "onLayout: " + changed + ", bitmapChanged: " + mBitmapChanged + ", scaleChanged: " + mScaleTypeChanged);
+            Log.d(LOG_TAG, "onLayout: " + changed + ", bitmapChanged: " + mBitmapChanged);
         }
 
         super.onLayout(changed, left, top, right, bottom);
@@ -253,7 +252,7 @@ public class ImageCropView extends ImageView {
 
         if (drawable != null) {
 
-            if (changed || mScaleTypeChanged || mBitmapChanged) {
+            if (changed || mBitmapChanged) {
 
                 if (mBitmapChanged) {
                     mBaseMatrix.reset();
@@ -280,7 +279,7 @@ public class ImageCropView extends ImageView {
                 }
 
                 // 1. bitmap changed or scaleType changed
-                if (mBitmapChanged || mScaleTypeChanged) {
+                if (mBitmapChanged) {
                     setImageMatrix(getImageViewMatrix());
                 } else if (changed) {
 
@@ -321,11 +320,13 @@ public class ImageCropView extends ImageView {
                     zoomTo(scale);
                 }
 
-                center(true, true);
+                if (!mRestoreRequest) {
+                    center(true, true);
+                }
 
 
-                if (mScaleTypeChanged) mScaleTypeChanged = false;
                 if (mBitmapChanged) mBitmapChanged = false;
+                if (mRestoreRequest) mRestoreRequest = false;
 
                 if (LOG_ENABLED) {
                     Log.d(LOG_TAG, "new scale: " + getScale());
@@ -333,8 +334,7 @@ public class ImageCropView extends ImageView {
             }
         } else {
             if (mBitmapChanged) mBitmapChanged = false;
-            if (mScaleTypeChanged) mScaleTypeChanged = false;
-
+            if (mRestoreRequest) mRestoreRequest = false;
         }
     }
 
@@ -967,28 +967,29 @@ public class ImageCropView extends ImageView {
         invalidate();
     }
 
-    public float[] getPositionInfo() {
-        float[] vals = new float[9];
-        mSuppMatrix.getValues(vals);
-        return vals;
+    int savedAspectRatioWidth;
+    int savedAspectRatioHeight;
+    float[] suppMatrixValues = new float[9];
+
+    public void saveState() {
+        savedAspectRatioWidth = mAspectRatioWidth;
+        savedAspectRatioHeight = mAspectRatioHeight;
+        mSuppMatrix.getValues(suppMatrixValues);
     }
 
-    public void applyPositionInfo(float[] values) {
+    public void restoreState() {
         mBitmapChanged = true;
-        applyValues(values);
-        requestLayout();
-    }
-
-    private void applyValues(float[] values) {
-        if (LOG_ENABLED) {
-            Log.i(LOG_TAG, "Matrix updated based on previous position info");
-        }
+        mRestoreRequest = true;
+        mAspectRatioWidth = savedAspectRatioWidth;
+        mAspectRatioHeight = savedAspectRatioHeight;
+        mTargetAspectRatio = (float) mAspectRatioHeight / (float) mAspectRatioWidth;
 
         mSuppMatrix = new Matrix();
-        mSuppMatrix.setValues(values);
+        mSuppMatrix.setValues(suppMatrixValues);
 
         setImageMatrix(getImageViewMatrix());
         postInvalidate();
+        requestLayout();
     }
 
     public void setDoubleTapListener(OnImageViewTouchDoubleTapListener listener) {
@@ -1025,7 +1026,7 @@ public class ImageCropView extends ImageView {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (getBitmapChanged()) return false;
+        if (mBitmapChanged) return false;
         mScaleDetector.onTouchEvent(event);
 
         if (!mScaleDetector.isInProgress()) {
@@ -1079,12 +1080,12 @@ public class ImageCropView extends ImageView {
     }
 
     public boolean onDown(MotionEvent e) {
-        if (getBitmapChanged()) return false;
+        if (mBitmapChanged) return false;
         return true;
     }
 
     public boolean onUp(MotionEvent e) {
-        if (getBitmapChanged()) return false;
+        if (mBitmapChanged) return false;
         if (getScale() < getMinScale()) {
             zoomTo(getMinScale(), 50);
         }
@@ -1092,7 +1093,7 @@ public class ImageCropView extends ImageView {
     }
 
     public boolean onSingleTapUp(MotionEvent e) {
-        if (getBitmapChanged()) return false;
+        if (mBitmapChanged) return false;
         return true;
     }
 

@@ -24,13 +24,11 @@ import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
 import com.naver.android.helloyako.imagecrop.view.ImageCropView;
-import com.naver.android.helloyako.imagecrop.util.BitmapLoadUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -190,7 +188,7 @@ public class CropActivity extends Activity {
     }
 
     public void onClickSaveButton(View v) {
-        positionInfo = imageCropView.getPositionInfo();
+        imageCropView.saveState();
         View restoreButton = findViewById(R.id.restore_btn);
         if (!restoreButton.isEnabled()) {
             restoreButton.setEnabled(true);
@@ -198,7 +196,7 @@ public class CropActivity extends Activity {
     }
 
     public void onClickRestoreButton(View v) {
-        imageCropView.applyPositionInfo(positionInfo);
+        imageCropView.restoreState();
     }
 
 }
