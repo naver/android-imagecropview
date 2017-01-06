@@ -128,15 +128,23 @@ public class CropActivity extends Activity {
             public void onClick(View v) {
                 if (!imageCropView.isChangingScale()) {
                     Bitmap b = imageCropView.getCroppedImage();
-                    bitmapConvertToFile(b);
+                    if (b != null) {
+                        bitmapConvertToFile(b);
+                    } else {
+                        Toast.makeText(CropActivity.this, R.string.fail_to_crop, Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });
     }
 
     private boolean isPossibleCrop(int widthRatio, int heightRatio) {
-        int bitmapWidth = imageCropView.getViewBitmap().getWidth();
-        int bitmapHeight = imageCropView.getViewBitmap().getHeight();
+        Bitmap bitmap = imageCropView.getViewBitmap();
+        if (bitmap == null) {
+            return false;
+        }
+        int bitmapWidth = bitmap.getWidth();
+        int bitmapHeight = bitmap.getHeight();
         if (bitmapWidth < widthRatio && bitmapHeight < heightRatio) {
             return false;
         } else {

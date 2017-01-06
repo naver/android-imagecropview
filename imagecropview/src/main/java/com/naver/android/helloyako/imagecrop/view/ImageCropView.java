@@ -919,16 +919,26 @@ public class ImageCropView extends ImageView {
 
     public Bitmap getCroppedImage() {
         CropInfo cropInfo = getCropInfo();
-
-        if (imageFilePath != null) {
-            return cropInfo.getCroppedImage(imageFilePath);
-        } else {
-            return cropInfo.getCroppedImage(getViewBitmap());
+        if (cropInfo == null) {
+            return null;
         }
+        Bitmap bitmap;
+        if (imageFilePath != null) {
+            bitmap = cropInfo.getCroppedImage(imageFilePath);
+        } else {
+            bitmap = getViewBitmap();
+            if (bitmap != null) {
+                bitmap = cropInfo.getCroppedImage(bitmap);
+            }
+        }
+        return bitmap;
     }
 
     public CropInfo getCropInfo() {
         Bitmap viewBitmap = getViewBitmap();
+        if (viewBitmap == null) {
+            return null;
+        }
         float scale = baseScale * getScale();
         RectF viewImageRect = getBitmapRect();
 
@@ -936,7 +946,13 @@ public class ImageCropView extends ImageView {
     }
 
     public Bitmap getViewBitmap() {
-        return ((FastBitmapDrawable) getDrawable()).getBitmap();
+        Drawable drawable = getDrawable();
+        if (drawable != null) {
+            return ((FastBitmapDrawable) drawable).getBitmap();
+        } else {
+            Log.e(LOG_TAG, "drawable is null");
+            return null;
+        }
     }
 
     public void setGridInnerMode(int gridInnerMode) {
