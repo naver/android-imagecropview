@@ -14,8 +14,8 @@ Sample app is base on [aviary SDK sample](https://developers.aviary.com).
 ![screenshot](doc/img/pholar.gif)
 ## Installation
 [Android Studio](http://developer.android.com/sdk/index.html)  
-Android SDK 21  
-Android SDK Build-tools 21.1.2  
+Android SDK 23
+Android SDK Build-tools 23.0.2
 (You can change other sdk and build-tools)  
 
 ## Usage
@@ -25,7 +25,7 @@ Android SDK Build-tools 21.1.2
 	}
 
 	dependencies {
-	    compile 'com.naver.android.helloyako:imagecropview:1.1.0'
+	    compile 'com.naver.android.helloyako:imagecropview:1.2.0'
 	}
 
 ## Demo
