@@ -31,7 +31,14 @@ public class CropInfo {
     }
 
     public Bitmap getCroppedImage(String path) {
-        int reqSize = 4000;
+        return getCroppedImage(path, 4000);
+    }
+
+    /**
+     * @param reqSize for image sampling
+     *
+     */
+    public Bitmap getCroppedImage(String path, int reqSize) {
         Bitmap bitmap = BitmapLoadUtils.decode(path, reqSize, reqSize);
         return getCroppedImage(bitmap);
     }

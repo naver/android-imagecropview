@@ -24,13 +24,11 @@ import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
 import com.naver.android.helloyako.imagecrop.view.ImageCropView;
-import com.naver.android.helloyako.imagecrop.util.BitmapLoadUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -63,16 +61,16 @@ public class CropActivity extends Activity {
 
         imageCropView.setImageFilePath(uri.toString());
 
-        imageCropView.setAspectRatio(1,1);
+        imageCropView.setAspectRatio(1, 1);
 
         findViewById(R.id.ratio11btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "click 1 : 1");
-                if(isPossibleCrop(1,1)){
+                if (isPossibleCrop(1, 1)) {
                     imageCropView.setAspectRatio(1, 1);
                 } else {
-                    Toast.makeText(CropActivity.this,R.string.can_not_crop,Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CropActivity.this, R.string.can_not_crop, Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -81,10 +79,10 @@ public class CropActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "click 3 : 4");
-                if(isPossibleCrop(3,4)){
+                if (isPossibleCrop(3, 4)) {
                     imageCropView.setAspectRatio(3, 4);
                 } else {
-                    Toast.makeText(CropActivity.this,R.string.can_not_crop,Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CropActivity.this, R.string.can_not_crop, Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -93,10 +91,10 @@ public class CropActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "click 4 : 3");
-                if(isPossibleCrop(4,3)){
+                if (isPossibleCrop(4, 3)) {
                     imageCropView.setAspectRatio(4, 3);
                 } else {
-                    Toast.makeText(CropActivity.this,R.string.can_not_crop,Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CropActivity.this, R.string.can_not_crop, Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -105,10 +103,10 @@ public class CropActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "click 16 : 9");
-                if(isPossibleCrop(16,9)){
+                if (isPossibleCrop(16, 9)) {
                     imageCropView.setAspectRatio(16, 9);
                 } else {
-                    Toast.makeText(CropActivity.this,R.string.can_not_crop,Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CropActivity.this, R.string.can_not_crop, Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -117,10 +115,10 @@ public class CropActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "click 9 : 16");
-                if(isPossibleCrop(9,16)){
+                if (isPossibleCrop(9, 16)) {
                     imageCropView.setAspectRatio(9, 16);
                 } else {
-                    Toast.makeText(CropActivity.this,R.string.can_not_crop,Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CropActivity.this, R.string.can_not_crop, Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -128,18 +126,26 @@ public class CropActivity extends Activity {
         findViewById(R.id.crop_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!imageCropView.isChangingScale()) {
+                if (!imageCropView.isChangingScale()) {
                     Bitmap b = imageCropView.getCroppedImage();
-                    bitmapConvertToFile(b);
+                    if (b != null) {
+                        bitmapConvertToFile(b);
+                    } else {
+                        Toast.makeText(CropActivity.this, R.string.fail_to_crop, Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });
     }
 
-    private boolean isPossibleCrop(int widthRatio, int heightRatio){
-        int bitmapWidth = imageCropView.getViewBitmap().getWidth();
-        int bitmapHeight = imageCropView.getViewBitmap().getHeight();
-        if(bitmapWidth < widthRatio && bitmapHeight < heightRatio){
+    private boolean isPossibleCrop(int widthRatio, int heightRatio) {
+        Bitmap bitmap = imageCropView.getViewBitmap();
+        if (bitmap == null) {
+            return false;
+        }
+        int bitmapWidth = bitmap.getWidth();
+        int bitmapHeight = bitmap.getHeight();
+        if (bitmapWidth < widthRatio && bitmapHeight < heightRatio) {
             return false;
         } else {
             return true;
@@ -150,7 +156,7 @@ public class CropActivity extends Activity {
         FileOutputStream fileOutputStream = null;
         File bitmapFile = null;
         try {
-            File file = new File(Environment.getExternalStoragePublicDirectory("image_crop_sample"),"");
+            File file = new File(Environment.getExternalStoragePublicDirectory("image_crop_sample"), "");
             if (!file.exists()) {
                 file.mkdir();
             }
@@ -169,7 +175,7 @@ public class CropActivity extends Activity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(CropActivity.this,"file saved",Toast.LENGTH_LONG).show();
+                            Toast.makeText(CropActivity.this, "file saved", Toast.LENGTH_LONG).show();
                         }
                     });
                 }
@@ -190,7 +196,7 @@ public class CropActivity extends Activity {
     }
 
     public void onClickSaveButton(View v) {
-        positionInfo = imageCropView.getPositionInfo();
+        imageCropView.saveState();
         View restoreButton = findViewById(R.id.restore_btn);
         if (!restoreButton.isEnabled()) {
             restoreButton.setEnabled(true);
@@ -198,7 +204,7 @@ public class CropActivity extends Activity {
     }
 
     public void onClickRestoreButton(View v) {
-        imageCropView.applyPositionInfo(positionInfo);
+        imageCropView.restoreState();
     }
 
 }

@@ -132,7 +132,7 @@ public class MainActivity extends Activity {
             switch (requestCode) {
                 case ACTION_REQUEST_GALLERY:
                     Uri uri = data.getData();
-                    String filePath = BitmapLoadUtils.getPathFromUri(this, uri);
+                    String filePath = getPathFromUri(uri);
                     Uri filePathUri = Uri.parse(filePath);
                     loadAsync(filePathUri);
                     break;
@@ -266,6 +266,27 @@ public class MainActivity extends Activity {
             Log.i(TAG, "onCancelled");
         }
 
+    }
+
+    private String getPathFromUri(Uri uri) {
+        if (uri == null) {
+            return null;
+        }
+        Cursor cursor = null;
+        try {
+            String[] proj = {MediaStore.Images.Media.DATA};
+            cursor = this.getContentResolver().query(uri, proj, null, null, null);
+            if (cursor == null) {
+                return null;
+            }
+            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            cursor.moveToFirst();
+            return cursor.getString(column_index);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
     }
 
 }

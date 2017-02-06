@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">ImageCropSample</string>
     <string name="can_not_crop">Can not crop</string>
+    <string name="fail_to_crop">Fail to crop</string>
 </resources>
