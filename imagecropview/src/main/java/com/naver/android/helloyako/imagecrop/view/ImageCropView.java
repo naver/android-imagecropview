@@ -32,6 +32,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
@@ -963,6 +964,20 @@ public class ImageCropView extends ImageView {
     public void setGridOuterMode(int gridOuterMode) {
         this.gridOuterMode = gridOuterMode;
         invalidate();
+    }
+
+    public void setGridLeftRightMargin(int marginDP) {
+        this.gridLeftRightMargin = dpToPixel(marginDP);
+        requestLayout();
+    }
+
+    public void setGridTopBottomMargin(int marginDP) {
+        this.gridTopBottomMargin = dpToPixel(marginDP);
+        requestLayout();
+    }
+
+    private int dpToPixel(int dp) {
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, getResources().getDisplayMetrics());
     }
 
     public void saveState() {
