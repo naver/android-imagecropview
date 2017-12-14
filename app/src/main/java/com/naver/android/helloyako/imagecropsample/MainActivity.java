@@ -138,18 +138,14 @@ public class MainActivity extends Activity {
                     String filePath = "";
                     if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                         filePath = getRealPathFromURI_API19(this, data.getData());
-                    }else if (Build.VERSION.SDK_INT > Build.VERSION_CODES.HONEYCOMB && Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN){
+                    }else if (Build.VERSION.SDK_INT > Build.VERSION_CODES.HONEYCOMB && Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN) {
                         filePath = getRealPathFromURI_API11to18(this, data.getData());
-                    }else{
+                    }else {
                         filePath = getRealPathFromURI_BelowAPI11(this, data.getData());
                     }
 
                     Uri filePathUri = Uri.parse(filePath);
                     loadAsync(filePathUri);
-//                    Uri uri = data.getData();
-//                    String filePath = getPathFromUri(uri);
-//                    Uri filePathUri = Uri.parse(filePath);
-//                    loadAsync(filePathUri);
                     break;
             }
         }
@@ -305,7 +301,7 @@ public class MainActivity extends Activity {
     }
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
-    public static String getRealPathFromURI_API19(Context context, Uri uri){
+    public static String getRealPathFromURI_API19(Context context, Uri uri) {
         String filePath = "";
         String wholeID = DocumentsContract.getDocumentId(uri);
 
@@ -338,21 +334,21 @@ public class MainActivity extends Activity {
                 contentUri, proj, null, null, null);
         Cursor cursor = cursorLoader.loadInBackground();
 
-        if(cursor != null){
-            int column_index =
+        if(cursor != null) {
+            int columnIndex =
                     cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
             cursor.moveToFirst();
-            result = cursor.getString(column_index);
+            result = cursor.getString(columnIndex);
         }
         return result;
     }
 
-    public static String getRealPathFromURI_BelowAPI11(Context context, Uri contentUri){
+    public static String getRealPathFromURI_BelowAPI11(Context context, Uri contentUri) {
         String[] proj = { MediaStore.Images.Media.DATA };
         Cursor cursor = context.getContentResolver().query(contentUri, proj, null, null, null);
-        int column_index
+        int columnIndex
                 = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
         cursor.moveToFirst();
-        return cursor.getString(column_index);
+        return cursor.getString(columnIndex);
     }
 }
