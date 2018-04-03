@@ -23,7 +23,7 @@ android {
 
     defaultConfig {
         applicationId "com.naver.android.helloyako.imagecropsample"
-        minSdkVersion 9
+        minSdkVersion 14
         targetSdkVersion Integer.parseInt(project.ANDROID_BUILD_TARGET_SDK_VERSION)
         versionCode Integer.parseInt(project.VERSION_CODE)
         versionName VERSION_NAME
@@ -37,8 +37,8 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile project(':imagecropview')
-    compile 'com.android.support:appcompat-v7:21.0.3'
-    compile 'com.android.support:support-v4:21.0.3'
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation project(':imagecropview')
+    implementation 'com.android.support:appcompat-v7:27.1.0'
+    implementation 'com.android.support:support-v4:27.1.0'
 }
