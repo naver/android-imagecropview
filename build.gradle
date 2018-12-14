@@ -1,6 +1,10 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
+    ext {
+        appcompat_version = '1.1.0-alpha01'
+        legacy_version = '1.0.0'
+    }
     repositories {
         jcenter()
         google()
