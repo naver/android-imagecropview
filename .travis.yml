@@ -6,8 +6,8 @@ jdk:
 android:
   components:
     - tools
-    - build-tools-27.0.3
-    - android-27
+    - build-tools-28.0.0
+    - android-28
     - extra-android-m2repository
     - extra-google-m2repository
     - extra-android-support
@@ -27,4 +27,7 @@ install:
     - ./gradlew androidDependencies
     
 script:
+    - chmod +x ./gradlew
+
     - ./gradlew imagecropview:check imagecropview:assemble
+
