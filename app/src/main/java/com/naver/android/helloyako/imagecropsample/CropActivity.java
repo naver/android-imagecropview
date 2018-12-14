@@ -40,13 +40,12 @@ public class CropActivity extends Activity {
     public static final String TAG = "CropActivity";
 
     private ImageCropView imageCropView;
-    private float[] positionInfo;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_crop);
-        imageCropView = (ImageCropView) findViewById(R.id.image);
+        imageCropView = findViewById(R.id.image);
 
         Intent i = getIntent();
         Uri uri = i.getData();

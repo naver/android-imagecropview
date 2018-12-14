@@ -53,12 +53,12 @@ public class MainActivity extends Activity {
     private static final int MAIN_ACTIVITY_REQUEST_STORAGE = RESULT_FIRST_USER;
     private static final int ACTION_REQUEST_GALLERY = 99;
 
-    Button mGalleryButton;
-    Button mEditButton;
-    ImageView mImage;
-    View mImageContainer;
+    private Button mGalleryButton;
+    private Button mEditButton;
+    private ImageView mImage;
+    private View mImageContainer;
 
-    Uri mImageUri;
+    private Uri mImageUri;
 
     int imageWidth, imageHeight;
 
@@ -70,9 +70,9 @@ public class MainActivity extends Activity {
         imageWidth = 1000;
         imageHeight = 1000;
 
-        mGalleryButton = (Button) findViewById(R.id.button1);
-        mEditButton = (Button) findViewById(R.id.button2);
-        mImage = ((ImageView) findViewById(R.id.image));
+        mGalleryButton = findViewById(R.id.button1);
+        mEditButton = findViewById(R.id.button2);
+        mImage = findViewById(R.id.image);
         mImageContainer = findViewById(R.id.image_container);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -138,7 +138,7 @@ public class MainActivity extends Activity {
                     String filePath = "";
                     if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                         filePath = getRealPathFromURI_API19(this, data.getData());
-                    }else if (Build.VERSION.SDK_INT > Build.VERSION_CODES.HONEYCOMB && Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN) {
+                    }else if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN) {
                         filePath = getRealPathFromURI_API11to18(this, data.getData());
                     }else {
                         filePath = getRealPathFromURI_BelowAPI11(this, data.getData());
