@@ -23,6 +23,7 @@ import static javax.microedition.khronos.egl.EGL10.EGL_WIDTH;
 /**
  * Created by helloyako on 15. 6. 19..
  */
+@SuppressWarnings({"WeakerAccess", "unused"})
 public class GLUtils {
     public static int getMaxTextureSize() {
         int[] version = new int[2];

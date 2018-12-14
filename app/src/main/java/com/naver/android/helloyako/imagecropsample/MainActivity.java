@@ -35,8 +35,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.v4.content.CursorLoader;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -45,6 +43,8 @@ import android.widget.Toast;
 
 import com.naver.android.helloyako.imagecrop.util.BitmapLoadUtils;
 
+import androidx.annotation.NonNull;
+import androidx.loader.content.CursorLoader;
 
 public class MainActivity extends Activity {
 
@@ -53,12 +53,12 @@ public class MainActivity extends Activity {
     private static final int MAIN_ACTIVITY_REQUEST_STORAGE = RESULT_FIRST_USER;
     private static final int ACTION_REQUEST_GALLERY = 99;
 
-    Button mGalleryButton;
-    Button mEditButton;
-    ImageView mImage;
-    View mImageContainer;
+    private Button mGalleryButton;
+    private Button mEditButton;
+    private ImageView mImage;
+    private View mImageContainer;
 
-    Uri mImageUri;
+    private Uri mImageUri;
 
     int imageWidth, imageHeight;
 
@@ -70,9 +70,9 @@ public class MainActivity extends Activity {
         imageWidth = 1000;
         imageHeight = 1000;
 
-        mGalleryButton = (Button) findViewById(R.id.button1);
-        mEditButton = (Button) findViewById(R.id.button2);
-        mImage = ((ImageView) findViewById(R.id.image));
+        mGalleryButton = findViewById(R.id.button1);
+        mEditButton = findViewById(R.id.button2);
+        mImage = findViewById(R.id.image);
         mImageContainer = findViewById(R.id.image_container);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -98,34 +98,20 @@ public class MainActivity extends Activity {
     }
 
     private void initClickListener() {
-        mGalleryButton.setOnClickListener(new View.OnClickListener() {
+        mGalleryButton.setOnClickListener(v -> pickFromGallery());
 
-            @Override
-            public void onClick(View v) {
-                pickFromGallery();
+        mEditButton.setOnClickListener(v -> {
+            if (mImageUri != null) {
+                startCrop(mImageUri);
             }
         });
 
-        mEditButton.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                if (mImageUri != null) {
-                    startCrop(mImageUri);
-                }
-            }
-        });
-
-        mImageContainer.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                findViewById(R.id.touch_me).setVisibility(View.GONE);
-                Uri uri = pickRandomImage();
-                if (uri != null) {
-                    Log.d(TAG, "image uri: " + uri);
-                    loadAsync(uri);
-                }
+        mImageContainer.setOnClickListener(v -> {
+            findViewById(R.id.touch_me).setVisibility(View.GONE);
+            Uri uri = pickRandomImage();
+            if (uri != null) {
+                Log.d(TAG, "image uri: " + uri);
+                loadAsync(uri);
             }
         });
     }
@@ -135,12 +121,12 @@ public class MainActivity extends Activity {
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case ACTION_REQUEST_GALLERY:
-                    String filePath = "";
+                    String filePath;
                     if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                         filePath = getRealPathFromURI_API19(this, data.getData());
-                    }else if (Build.VERSION.SDK_INT > Build.VERSION_CODES.HONEYCOMB && Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN) {
+                    } else if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN) {
                         filePath = getRealPathFromURI_API11to18(this, data.getData());
-                    }else {
+                    } else {
                         filePath = getRealPathFromURI_BelowAPI11(this, data.getData());
                     }
 
@@ -202,7 +188,7 @@ public class MainActivity extends Activity {
         Log.i(TAG, "loadAsync: " + uri);
 
         Drawable toRecycle = mImage.getDrawable();
-        if (toRecycle != null && toRecycle instanceof BitmapDrawable) {
+        if (toRecycle instanceof BitmapDrawable) {
             if (((BitmapDrawable) mImage.getDrawable()).getBitmap() != null)
                 ((BitmapDrawable) mImage.getDrawable()).getBitmap().recycle();
         }
@@ -234,7 +220,7 @@ public class MainActivity extends Activity {
         protected Bitmap doInBackground(Uri... params) {
             mUri = params[0];
 
-            Bitmap bitmap = null;
+            Bitmap bitmap;
 
 //            while (mImageContainer.getWidth() < 1) {
 //                try {

@@ -7,6 +7,7 @@ import com.naver.android.helloyako.imagecrop.util.BitmapLoadUtils;
 /**
  * Created by helloyako on 2016. 5. 10..
  */
+@SuppressWarnings({"WeakerAccess", "unused"})
 public class CropInfo {
     private float scale;
     private float viewBitmapWidth;
