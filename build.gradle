@@ -4,6 +4,7 @@ buildscript {
     ext {
         appcompat_version = '1.1.0-alpha01'
         legacy_version = '1.0.0'
+        easying_version = '1.0.3'
     }
     repositories {
         jcenter()
