@@ -4,7 +4,6 @@
 An Android library that lets you implement image crop.
 ImageCropView crops image by moving image under fixed crop area like instagram and iOS.  
 Image zoom in/out is base on [sephiroth74's imageViewZoom](https://github.com/sephiroth74/ImageViewZoom).  
-~Sample app is base on [aviary SDK sample](https://developers.aviary.com).~
 
 ## Screenshot
 ![screenshot](doc/img/screenshot.png)
