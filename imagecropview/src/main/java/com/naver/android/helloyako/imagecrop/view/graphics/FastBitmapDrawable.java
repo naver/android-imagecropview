@@ -17,6 +17,7 @@ import java.io.InputStream;
  *
  * @author alessandro
  */
+@SuppressWarnings({"WeakerAccess", "unused"})
 public class FastBitmapDrawable extends Drawable {
 
     protected Bitmap mBitmap;

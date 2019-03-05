@@ -49,7 +49,7 @@ import java.io.File;
 import it.sephiroth.android.library.easing.Cubic;
 import it.sephiroth.android.library.easing.Easing;
 
-
+@SuppressWarnings({"WeakerAccess", "unused"})
 public class ImageCropView extends ImageView {
 
     public static final String LOG_TAG = "ImageCropView";
@@ -1026,6 +1026,7 @@ public class ImageCropView extends ImageView {
     }
 
     @Override
+    @SuppressLint("ClickableViewAccessibility")
     public boolean onTouchEvent(MotionEvent event) {
         if (mBitmapChanged) return false;
         mScaleDetector.onTouchEvent(event);

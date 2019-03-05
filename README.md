@@ -1,10 +1,9 @@
 # ImageCropView
-[![Build Status](https://travis-ci.org/naver/android-imagecropview.svg?branch=master)](https://travis-ci.org/naver/android-imagecropview)  
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) [![Build Status](https://travis-ci.org/naver/android-imagecropview.svg?branch=master)](https://travis-ci.org/naver/android-imagecropview)  
 
-ImageCropView help you image crop in android platform.  
+An Android library that lets you implement image crop.
 ImageCropView crops image by moving image under fixed crop area like instagram and iOS.  
 Image zoom in/out is base on [sephiroth74's imageViewZoom](https://github.com/sephiroth74/ImageViewZoom).  
-Sample app is base on [aviary SDK sample](https://developers.aviary.com).
 
 ## Screenshot
 ![screenshot](doc/img/screenshot.png)
@@ -14,19 +13,39 @@ Sample app is base on [aviary SDK sample](https://developers.aviary.com).
 ![screenshot](doc/img/pholar.gif)
 ## Installation
 [Android Studio](http://developer.android.com/sdk/index.html)  
-Android SDK 23
-Android SDK Build-tools 23.0.2
+Android SDK 28
+Android SDK Build-tools 28.0.3  
 (You can change other sdk and build-tools)  
 
 ## Usage
 ##### Gradle
-	repositories {
-	    mavenCentral()
-	}
+```gradle
+dependencies {
+	implementation "com.naver.android.helloyako:imagecropview:1.2.0
+}
+```
+	
+## Grid Option
+#### XML
+```gradle
+<com.naver.android.helloyako.imagecrop.view.ImageCropView
+         xmlns:imagecrop="http://schemas.android.com/apk/res-auto"
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         imagecrop:setInnerGridMode="on"
+         imagecrop:gridInnerStroke="1dp"
+         imagecrop:gridInnerColor="#66ffffff"
+         imagecrop:setOuterGridMode="on"
+         imagecrop:gridOuterStroke="1dp"
+         imagecrop:gridOuterColor="#ffffff"/>
+```
 
-	dependencies {
-	    compile 'com.naver.android.helloyako:imagecropview:1.2.0'
-	}
+#### JAVA
+```java
+imageCropView.setGridInnerMode(ImageCropView.GRID_ON);
+imageCropView.setGridOuterMode(ImageCropView.GRID_ON);
+```
+
 
 ## Demo
 [APK](https://github.com/naver/android-imagecropview/raw/master/apk/app-release.apk)  
