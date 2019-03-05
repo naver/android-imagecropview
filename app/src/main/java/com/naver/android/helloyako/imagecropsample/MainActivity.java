@@ -48,7 +48,7 @@ import androidx.loader.content.CursorLoader;
 
 public class MainActivity extends Activity {
 
-    public static final String TAG = "MainActivity";
+    private static final String TAG = "MainActivity";
 
     private static final int MAIN_ACTIVITY_REQUEST_STORAGE = RESULT_FIRST_USER;
     private static final int ACTION_REQUEST_GALLERY = 99;
@@ -60,7 +60,8 @@ public class MainActivity extends Activity {
 
     private Uri mImageUri;
 
-    int imageWidth, imageHeight;
+    private int imageWidth;
+    private int imageHeight;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,7 +123,7 @@ public class MainActivity extends Activity {
             switch (requestCode) {
                 case ACTION_REQUEST_GALLERY:
                     String filePath;
-                    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                         filePath = getRealPathFromURI_API19(this, data.getData());
                     } else if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN) {
                         filePath = getRealPathFromURI_API11to18(this, data.getData());
@@ -151,16 +152,13 @@ public class MainActivity extends Activity {
         startActivity(intent);
     }
 
-    private boolean setImageURI(final Uri uri, final Bitmap bitmap) {
-
+    private void setImageURI(final Uri uri, final Bitmap bitmap) {
         Log.d(TAG, "image size: " + bitmap.getWidth() + "x" + bitmap.getHeight());
         mImage.setImageBitmap(bitmap);
         mImage.setBackgroundDrawable(null);
 
         mEditButton.setEnabled(true);
         mImageUri = uri;
-
-        return true;
     }
 
     private Uri pickRandomImage() {
@@ -219,21 +217,7 @@ public class MainActivity extends Activity {
         @Override
         protected Bitmap doInBackground(Uri... params) {
             mUri = params[0];
-
-            Bitmap bitmap;
-
-//            while (mImageContainer.getWidth() < 1) {
-//                try {
-//                    Thread.sleep(1);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//
-//            final int w = mImageContainer.getWidth();
-//            Log.d(TAG, "width: " + w);
-            bitmap = BitmapLoadUtils.decode(mUri.toString(), imageWidth, imageHeight, true);
-            return bitmap;
+            return BitmapLoadUtils.decode(mUri.toString(), imageWidth, imageHeight, true);
         }
 
         @Override
@@ -265,42 +249,21 @@ public class MainActivity extends Activity {
 
     }
 
-    private String getPathFromUri(Uri uri) {
-        if (uri == null) {
-            return null;
-        }
-        Cursor cursor = null;
-        try {
-            String[] proj = {MediaStore.Images.Media.DATA};
-            cursor = this.getContentResolver().query(uri, proj, null, null, null);
-            if (cursor == null) {
-                return null;
-            }
-            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-            cursor.moveToFirst();
-            return cursor.getString(column_index);
-        } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
-        }
-    }
-
     @TargetApi(Build.VERSION_CODES.KITKAT)
-    public static String getRealPathFromURI_API19(Context context, Uri uri) {
+    private String getRealPathFromURI_API19(Context context, Uri uri) {
         String filePath = "";
         String wholeID = DocumentsContract.getDocumentId(uri);
 
         // Split at colon, use second item in the array
         String id = wholeID.split(":")[1];
 
-        String[] column = { MediaStore.Images.Media.DATA };
+        String[] column = {MediaStore.Images.Media.DATA};
 
         // where id is equal to
         String sel = MediaStore.Images.Media._ID + "=?";
 
         Cursor cursor = context.getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                column, sel, new String[]{ id }, null);
+                column, sel, new String[]{id}, null);
 
         int columnIndex = cursor.getColumnIndex(column[0]);
 
@@ -311,8 +274,8 @@ public class MainActivity extends Activity {
         return filePath;
     }
 
-    public static String getRealPathFromURI_API11to18(Context context, Uri contentUri) {
-        String[] proj = { MediaStore.Images.Media.DATA };
+    private String getRealPathFromURI_API11to18(Context context, Uri contentUri) {
+        String[] proj = {MediaStore.Images.Media.DATA};
         String result = null;
 
         CursorLoader cursorLoader = new CursorLoader(
@@ -320,7 +283,7 @@ public class MainActivity extends Activity {
                 contentUri, proj, null, null, null);
         Cursor cursor = cursorLoader.loadInBackground();
 
-        if(cursor != null) {
+        if (cursor != null) {
             int columnIndex =
                     cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
             cursor.moveToFirst();
@@ -329,8 +292,8 @@ public class MainActivity extends Activity {
         return result;
     }
 
-    public static String getRealPathFromURI_BelowAPI11(Context context, Uri contentUri) {
-        String[] proj = { MediaStore.Images.Media.DATA };
+    private String getRealPathFromURI_BelowAPI11(Context context, Uri contentUri) {
+        String[] proj = {MediaStore.Images.Media.DATA};
         Cursor cursor = context.getContentResolver().query(contentUri, proj, null, null, null);
         int columnIndex
                 = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
