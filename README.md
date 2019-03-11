@@ -25,13 +25,14 @@ dependencies {
 }
 ```
 	
-## Grid Option
+## ImageCropView Option
 #### XML
 ```gradle
 <com.naver.android.helloyako.imagecrop.view.ImageCropView
          xmlns:imagecrop="http://schemas.android.com/apk/res-auto"
          android:layout_width="match_parent"
          android:layout_height="match_parent"
+         imagecrop:outsideLayerColor="#99000000"
          imagecrop:setInnerGridMode="on"
          imagecrop:gridInnerStroke="1dp"
          imagecrop:gridInnerColor="#66ffffff"
