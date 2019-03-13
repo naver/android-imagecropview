@@ -50,15 +50,12 @@ class MainActivity : Activity() {
 
     private var mImageUri: Uri? = null
 
-    private var imageWidth: Int = 0
-    private var imageHeight: Int = 0
+    private val imageWidth = 1000
+    private val imageHeight = 1000
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        imageWidth = 1000
-        imageHeight = 1000
 
         mGalleryButton = findViewById(R.id.button1)
         mEditButton = findViewById(R.id.button2)
@@ -85,20 +82,19 @@ class MainActivity : Activity() {
     }
 
     private fun initClickListener() {
-        mGalleryButton!!.setOnClickListener { v -> pickFromGallery() }
+        mGalleryButton?.setOnClickListener { pickFromGallery() }
 
-        mEditButton!!.setOnClickListener { v ->
-            if (mImageUri != null) {
-                startCrop(mImageUri!!)
+        mEditButton?.setOnClickListener {
+            mImageUri?.let {
+                startCrop(it)
             }
         }
 
-        mImageContainer!!.setOnClickListener { v ->
+        mImageContainer?.setOnClickListener {
             findViewById<View>(R.id.touch_me).visibility = View.GONE
-            val uri = pickRandomImage()
-            if (uri != null) {
-                Log.d(TAG, "image uri: $uri")
-                loadAsync(uri)
+            pickRandomImage()?.let {
+                Log.d(TAG, "image uri: $it")
+                loadAsync(it)
             }
         }
     }
@@ -107,17 +103,17 @@ class MainActivity : Activity() {
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
                 ACTION_REQUEST_GALLERY -> {
-                    val filePath: String?
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                        filePath = getRealPathFromURI_API19(this, data.data)
-                    } else if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN) {
-                        filePath = getRealPathFromURI_API11to18(this, data.data)
-                    } else {
-                        filePath = getRealPathFromURI_BelowAPI11(this, data.data)
-                    }
+                    var filePath: String? = null
+                    data.data?.let {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                            filePath = getRealPathFromURI_API19(this, it)
+                        } else if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN) {
+                            filePath = getRealPathFromURI_API11to18(this, it)
+                        }
 
-                    val filePathUri = Uri.parse(filePath)
-                    loadAsync(filePathUri)
+                        val filePathUri = Uri.parse(filePath)
+                        loadAsync(filePathUri)
+                    }
                 }
             }
         }
@@ -137,12 +133,12 @@ class MainActivity : Activity() {
         startActivity(intent)
     }
 
-    private fun setImageURI(uri: Uri?, bitmap: Bitmap) {
+    private fun setImageURI(uri: Uri, bitmap: Bitmap) {
         Log.d(TAG, "image size: " + bitmap.width + "x" + bitmap.height)
-        mImage!!.setImageBitmap(bitmap)
-        mImage!!.setBackgroundDrawable(null)
+        mImage?.setImageBitmap(bitmap)
+        mImage?.setBackgroundDrawable(null)
 
-        mEditButton!!.isEnabled = true
+        mEditButton?.isEnabled = true
         mImageUri = uri
     }
 
@@ -151,31 +147,32 @@ class MainActivity : Activity() {
                 MediaStore.Images.ImageColumns.SIZE + ">?", arrayOf("90000"), null)
         var uri: Uri? = null
 
-        if (c != null) {
-            val total = c.count
+        c?.let {
+            val total = it.count
             val position = (Math.random() * total).toInt()
             Log.d(TAG, "pickRandomImage. total images: $total, position: $position")
             if (total > 0) {
-                if (c.moveToPosition(position)) {
-                    val data = c.getString(c.getColumnIndex(MediaStore.Images.ImageColumns.DATA))
+                if (it.moveToPosition(position)) {
+                    val data = it.getString(it.getColumnIndex(MediaStore.Images.ImageColumns.DATA))
                     uri = Uri.parse(data)
-                    Log.d(TAG, uri!!.toString())
+                    Log.d(TAG, uri?.toString() ?: "")
                 }
             }
-            c.close()
+            it.close()
         }
+
         return uri
     }
 
     private fun loadAsync(uri: Uri) {
         Log.i(TAG, "loadAsync: $uri")
 
-        val toRecycle = mImage!!.drawable
-        if (toRecycle is BitmapDrawable) {
-            if ((mImage!!.drawable as BitmapDrawable).bitmap != null)
-                (mImage!!.drawable as BitmapDrawable).bitmap.recycle()
+        mImage?.drawable?.let {
+            if (it is BitmapDrawable) {
+                it.bitmap?.recycle()
+            }
         }
-        mImage!!.setImageDrawable(null)
+        mImage?.setImageDrawable(null)
         mImageUri = null
 
         val task = DownloadAsync()
@@ -184,7 +181,7 @@ class MainActivity : Activity() {
 
     internal inner class DownloadAsync : AsyncTask<Uri, Void, Bitmap>(), DialogInterface.OnCancelListener {
 
-        var mProgress: ProgressDialog? = null
+        private var mProgress: ProgressDialog? = null
         private var mUri: Uri? = null
 
         override fun onPreExecute() {
@@ -206,14 +203,13 @@ class MainActivity : Activity() {
         override fun onPostExecute(result: Bitmap?) {
             super.onPostExecute(result)
 
-            if (mProgress?.window != null) {
-                mProgress!!.dismiss()
-            }
-
-            if (result != null) {
-                setImageURI(mUri, result)
-            } else {
-                Toast.makeText(this@MainActivity, "Failed to load image " + mUri!!, Toast.LENGTH_SHORT).show()
+            mProgress?.dismiss()
+            result?.let {
+                mUri?.let { uri ->
+                    setImageURI(uri, result)
+                }
+            } ?: run {
+                Toast.makeText(this@MainActivity, "Failed to load image " + mUri?.toString(), Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -230,7 +226,7 @@ class MainActivity : Activity() {
     }
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
-    private fun getRealPathFromURI_API19(context: Context, uri: Uri?): String {
+    private fun getRealPathFromURI_API19(context: Context, uri: Uri): String {
         var filePath = ""
         val wholeID = DocumentsContract.getDocumentId(uri)
 
@@ -245,45 +241,38 @@ class MainActivity : Activity() {
         val cursor = context.contentResolver.query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                 column, sel, arrayOf(id), null)
 
-        val columnIndex = cursor!!.getColumnIndex(column[0])
+        cursor?.let {
+            val columnIndex = it.getColumnIndex(column[0])
 
-        if (cursor.moveToFirst()) {
-            filePath = cursor.getString(columnIndex)
+            if (it.moveToFirst()) {
+                filePath = it.getString(columnIndex)
+            }
+            it.close()
         }
-        cursor.close()
+
         return filePath
     }
 
-    private fun getRealPathFromURI_API11to18(context: Context, contentUri: Uri?): String? {
+    private fun getRealPathFromURI_API11to18(context: Context, uri: Uri): String? {
         val proj = arrayOf(MediaStore.Images.Media.DATA)
         var result: String? = null
 
         val cursorLoader = CursorLoader(
                 context,
-                contentUri!!, proj, null, null, null)
+                uri, proj, null, null, null)
         val cursor = cursorLoader.loadInBackground()
-
-        if (cursor != null) {
-            val columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
-            cursor.moveToFirst()
-            result = cursor.getString(columnIndex)
+        cursor?.let {
+            val columnIndex = it.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
+            it.moveToFirst()
+            result = it.getString(columnIndex)
         }
+
         return result
     }
 
-    private fun getRealPathFromURI_BelowAPI11(context: Context, contentUri: Uri?): String {
-        val proj = arrayOf(MediaStore.Images.Media.DATA)
-        val cursor = context.contentResolver.query(contentUri!!, proj, null, null, null)
-        val columnIndex = cursor!!.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
-        cursor.moveToFirst()
-        return cursor.getString(columnIndex)
-    }
-
     companion object {
-
-        private val TAG = "MainActivity"
-
-        private val MAIN_ACTIVITY_REQUEST_STORAGE = Activity.RESULT_FIRST_USER
-        private val ACTION_REQUEST_GALLERY = 99
+        private const val TAG = "MainActivity"
+        private const val MAIN_ACTIVITY_REQUEST_STORAGE = Activity.RESULT_FIRST_USER
+        private const val ACTION_REQUEST_GALLERY = 99
     }
 }
