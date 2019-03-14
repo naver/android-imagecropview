@@ -195,9 +195,15 @@ class MainActivity : Activity() {
             mProgress?.show()
         }
 
-        override fun doInBackground(vararg params: Uri): Bitmap {
+        override fun doInBackground(vararg params: Uri): Bitmap? {
             mUri = params[0]
-            return BitmapLoadUtils.decode(mUri!!.toString(), imageWidth, imageHeight, true)
+
+            var bitmap: Bitmap? = null
+            mUri?.let {
+                bitmap = BitmapLoadUtils.decode(it.toString(), imageWidth, imageHeight, true)
+            }
+
+            return bitmap
         }
 
         override fun onPostExecute(result: Bitmap?) {
