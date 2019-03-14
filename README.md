@@ -6,7 +6,7 @@ ImageCropView crops image by moving image under fixed crop area like instagram a
 Image zoom in/out is base on [sephiroth74's imageViewZoom](https://github.com/sephiroth74/ImageViewZoom).  
 
 ## Screenshot
-|                Screenshot               | in [pholar](https://play.google.com/store/apps/details?id=com.naver.android.pholar) |
+|                Screenshot               | in [PHOLAR](https://play.google.com/store/apps/details?id=com.naver.android.pholar) |
 |:---------------------------------------:|:-------------------------------------:|
 | ![screenshot](doc/img/screenshot.png)   | ![screenshot](doc/img/pholar.gif)     |
 
