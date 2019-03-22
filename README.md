@@ -6,11 +6,10 @@ ImageCropView crops image by moving image under fixed crop area like instagram a
 Image zoom in/out is base on [sephiroth74's imageViewZoom](https://github.com/sephiroth74/ImageViewZoom).  
 
 ## Screenshot
-![screenshot](doc/img/screenshot.png)
+|                Screenshot               | in [PHOLAR](https://play.google.com/store/apps/details?id=com.naver.android.pholar) |
+|:---------------------------------------:|:-------------------------------------:|
+| ![screenshot](doc/img/screenshot.png)   | ![screenshot](doc/img/pholar.gif)     |
 
-- in [pholar](https://play.google.com/store/apps/details?id=com.naver.android.pholar)
-
-![screenshot](doc/img/pholar.gif)
 ## Installation
 [Android Studio](http://developer.android.com/sdk/index.html)  
 Android SDK 28
@@ -21,17 +20,18 @@ Android SDK Build-tools 28.0.3
 ##### Gradle
 ```gradle
 dependencies {
-	implementation "com.naver.android.helloyako:imagecropview:1.2.0
+	implementation "com.naver.android.helloyako:imagecropview:1.2.2
 }
 ```
 	
-## Grid Option
+## ImageCropView Option
 #### XML
 ```gradle
 <com.naver.android.helloyako.imagecrop.view.ImageCropView
          xmlns:imagecrop="http://schemas.android.com/apk/res-auto"
          android:layout_width="match_parent"
          android:layout_height="match_parent"
+         imagecrop:outsideLayerColor="#99000000"
          imagecrop:setInnerGridMode="on"
          imagecrop:gridInnerStroke="1dp"
          imagecrop:gridInnerColor="#66ffffff"

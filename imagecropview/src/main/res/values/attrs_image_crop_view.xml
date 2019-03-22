@@ -17,6 +17,7 @@
         </attr>
         <attr name="gridLeftRightMargin" format="dimension" />
         <attr name="gridTopBottomMargin" format="dimension" />
+        <attr name="outsideLayerColor" format="color" />
     </declare-styleable>
     
 </resources>
