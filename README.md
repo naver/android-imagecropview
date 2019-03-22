@@ -10,6 +10,9 @@ Image zoom in/out is base on [sephiroth74's imageViewZoom](https://github.com/se
 |:---------------------------------------:|:-------------------------------------:|
 | ![screenshot](doc/img/screenshot.png)   | ![screenshot](doc/img/pholar.gif)     |
 
+- Screenshot image source 
+  - http://bts.ibighit.com/photo.php
+
 ## Installation
 [Android Studio](http://developer.android.com/sdk/index.html)  
 Android SDK 28
