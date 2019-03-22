@@ -88,14 +88,14 @@ public class ImageCropView extends ImageView {
     private boolean mRestoreRequest;
 
     final protected int DEFAULT_ANIMATION_DURATION = 200;
-    private static final String DEFAULT_BACKGROUND_COLOR_ID = "#99000000";
+    private static final String DEFAULT_OUTSIDE_LAYER_COLOR_ID = "#99000000";
 
     protected RectF mBitmapRect = new RectF();
     protected RectF mCenterRect = new RectF();
     protected RectF mScrollRect = new RectF();
     protected RectF mCropRect = new RectF();
 
-    private Paint mTransparentLayerPaint;
+    private Paint mOutsideLayerPaint;
 
     private int mAspectRatioWidth = DEFAULT_ASPECT_RATIO_WIDTH;
     private int mAspectRatioHeight = DEFAULT_ASPECT_RATIO_HEIGHT;
@@ -150,8 +150,9 @@ public class ImageCropView extends ImageView {
 
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ImageCropView);
 
-        mTransparentLayerPaint = new Paint();
-        mTransparentLayerPaint.setColor(Color.parseColor(DEFAULT_BACKGROUND_COLOR_ID));
+        mOutsideLayerPaint = new Paint();
+        int outsideLayerColor = a.getColor(R.styleable.ImageCropView_outsideLayerColor, Color.parseColor(DEFAULT_OUTSIDE_LAYER_COLOR_ID));
+        mOutsideLayerPaint.setColor(outsideLayerColor);
 
         setScaleType(ImageView.ScaleType.MATRIX);
 
@@ -380,10 +381,10 @@ public class ImageCropView extends ImageView {
         Rect r = new Rect();
         getLocalVisibleRect(r);
 
-        canvas.drawRect(r.left, r.top, r.right, mCropRect.top, mTransparentLayerPaint);                          // top
-        canvas.drawRect(r.left, mCropRect.bottom, r.right, r.bottom, mTransparentLayerPaint);                    // bottom
-        canvas.drawRect(r.left, mCropRect.top, mCropRect.left, mCropRect.bottom, mTransparentLayerPaint);        // left
-        canvas.drawRect(mCropRect.right, mCropRect.top, r.right, mCropRect.bottom, mTransparentLayerPaint);      // right
+        canvas.drawRect(r.left, r.top, r.right, mCropRect.top, mOutsideLayerPaint);                          // top
+        canvas.drawRect(r.left, mCropRect.bottom, r.right, r.bottom, mOutsideLayerPaint);                    // bottom
+        canvas.drawRect(r.left, mCropRect.top, mCropRect.left, mCropRect.bottom, mOutsideLayerPaint);        // left
+        canvas.drawRect(mCropRect.right, mCropRect.top, r.right, mCropRect.bottom, mOutsideLayerPaint);      // right
     }
 
     private void drawGrid(Canvas canvas) {
