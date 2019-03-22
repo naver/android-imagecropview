@@ -20,7 +20,7 @@ Android SDK Build-tools 28.0.3
 ##### Gradle
 ```gradle
 dependencies {
-	implementation "com.naver.android.helloyako:imagecropview:1.2.0
+	implementation "com.naver.android.helloyako:imagecropview:1.2.2
 }
 ```
 	
