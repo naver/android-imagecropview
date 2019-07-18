@@ -28,6 +28,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.naver.android.helloyako.imagecrop.model.ViewState;
 import com.naver.android.helloyako.imagecrop.view.ImageCropView;
 
 import java.io.File;
@@ -39,6 +40,7 @@ public class CropActivity extends Activity {
     public static final String TAG = "CropActivity";
 
     private ImageCropView imageCropView;
+    private ViewState viewState;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -171,7 +173,7 @@ public class CropActivity extends Activity {
     }
 
     public void onClickSaveButton(View v) {
-        imageCropView.saveState();
+        viewState = imageCropView.saveState();
         View restoreButton = findViewById(R.id.restore_btn);
         if (!restoreButton.isEnabled()) {
             restoreButton.setEnabled(true);
@@ -179,6 +181,9 @@ public class CropActivity extends Activity {
     }
 
     public void onClickRestoreButton(View v) {
-        imageCropView.restoreState();
+        if (viewState == null) {
+            return;
+        }
+        imageCropView.restoreState(viewState);
     }
 }
