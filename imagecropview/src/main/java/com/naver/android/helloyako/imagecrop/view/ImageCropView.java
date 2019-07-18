@@ -130,8 +130,6 @@ public class ImageCropView extends ImageView {
 
     private boolean isChangingScale = false;
 
-    private int savedAspectRatioWidth;
-    private int savedAspectRatioHeight;
     private float[] suppMatrixValues = new float[9];
 
     public ImageCropView(Context context) {
@@ -983,19 +981,14 @@ public class ImageCropView extends ImageView {
     }
 
     public ViewState saveState() {
-        savedAspectRatioWidth = mAspectRatioWidth;
-        savedAspectRatioHeight = mAspectRatioHeight;
         mSuppMatrix.getValues(suppMatrixValues);
 
-        return new ViewState(getImageViewMatrix(), mAspectRatioWidth, mAspectRatioHeight, suppMatrixValues);
+        return new ViewState(getImageViewMatrix(), suppMatrixValues);
     }
 
     public void restoreState(ViewState viewState) {
         mBitmapChanged = true;
         mRestoreRequest = true;
-        mAspectRatioWidth = viewState.getAspectRatioWidth();
-        mAspectRatioHeight = viewState.getAspectRatioHeight();
-        mTargetAspectRatio = (float) mAspectRatioHeight / (float) mAspectRatioWidth;
 
         mSuppMatrix = new Matrix();
         mSuppMatrix.setValues(viewState.getSuppMatrixValues());
