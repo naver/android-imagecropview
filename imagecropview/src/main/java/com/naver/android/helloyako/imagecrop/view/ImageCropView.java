@@ -41,6 +41,7 @@ import android.widget.ImageView;
 
 import com.naver.android.helloyako.imagecrop.R;
 import com.naver.android.helloyako.imagecrop.model.CropInfo;
+import com.naver.android.helloyako.imagecrop.model.ViewState;
 import com.naver.android.helloyako.imagecrop.util.BitmapLoadUtils;
 import com.naver.android.helloyako.imagecrop.view.graphics.FastBitmapDrawable;
 
@@ -129,8 +130,6 @@ public class ImageCropView extends ImageView {
 
     private boolean isChangingScale = false;
 
-    private int savedAspectRatioWidth;
-    private int savedAspectRatioHeight;
     private float[] suppMatrixValues = new float[9];
 
     public ImageCropView(Context context) {
@@ -981,23 +980,20 @@ public class ImageCropView extends ImageView {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, getResources().getDisplayMetrics());
     }
 
-    public void saveState() {
-        savedAspectRatioWidth = mAspectRatioWidth;
-        savedAspectRatioHeight = mAspectRatioHeight;
+    public ViewState saveState() {
         mSuppMatrix.getValues(suppMatrixValues);
+
+        return new ViewState(getImageViewMatrix(), suppMatrixValues);
     }
 
-    public void restoreState() {
+    public void restoreState(ViewState viewState) {
         mBitmapChanged = true;
         mRestoreRequest = true;
-        mAspectRatioWidth = savedAspectRatioWidth;
-        mAspectRatioHeight = savedAspectRatioHeight;
-        mTargetAspectRatio = (float) mAspectRatioHeight / (float) mAspectRatioWidth;
 
         mSuppMatrix = new Matrix();
-        mSuppMatrix.setValues(suppMatrixValues);
+        mSuppMatrix.setValues(viewState.getSuppMatrixValues());
 
-        setImageMatrix(getImageViewMatrix());
+        setImageMatrix(viewState.getMatrix());
         postInvalidate();
         requestLayout();
     }

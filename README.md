@@ -3,12 +3,15 @@
 
 An Android library that lets you implement image crop.
 ImageCropView crops image by moving image under fixed crop area like instagram and iOS.  
-Image zoom in/out is base on [sephiroth74's imageViewZoom](https://github.com/sephiroth74/ImageViewZoom).  
+Image zoom in/out is base on [sephiroth74's ImageViewZoom](https://github.com/sephiroth74/ImageViewZoom).  
 
 ## Screenshot
 |                Screenshot               | in [PHOLAR](https://play.google.com/store/apps/details?id=com.naver.android.pholar) |
 |:---------------------------------------:|:-------------------------------------:|
 | ![screenshot](doc/img/screenshot.png)   | ![screenshot](doc/img/pholar.gif)     |
+
+> Screenshot image source 
+> http://bts.ibighit.com/photo.php
 
 ## Installation
 [Android Studio](http://developer.android.com/sdk/index.html)  
@@ -20,7 +23,7 @@ Android SDK Build-tools 28.0.3
 ##### Gradle
 ```gradle
 dependencies {
-	implementation "com.naver.android.helloyako:imagecropview:1.2.2
+	implementation "com.naver.android.helloyako:imagecropview:1.2.3"
 }
 ```
 	
