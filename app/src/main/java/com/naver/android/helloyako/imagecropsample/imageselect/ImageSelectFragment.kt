@@ -79,6 +79,7 @@ class ImageSelectFragment : Fragment() {
     private fun chooseRandomImage() {
         if (!checkPermission()) {
             requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), RANDOM_IMAGE_SELECT_REQUEST_STORAGE)
+            return
         }
 
         pickRandomImage()?.let {
