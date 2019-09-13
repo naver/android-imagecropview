@@ -6,7 +6,7 @@
     app:startDestination="@id/nav_image_select">
     <fragment
         android:id="@+id/nav_image_select"
-        android:name="com.naver.android.helloyako.imagecropsample.ImageSelectFragment"
+        android:name="com.naver.android.helloyako.imagecropsample.imageselect.ImageSelectFragment"
         tools:layout="@layout/fragment_image_select">
         <action
             android:id="@+id/action_image_to_crop"
@@ -15,7 +15,7 @@
 
     <fragment
         android:id="@+id/nav_crop"
-        android:name="com.naver.android.helloyako.imagecropsample.CropFragment"
+        android:name="com.naver.android.helloyako.imagecropsample.crop.CropFragment"
         tools:layout="@layout/fragment_crop">
 
     </fragment>
