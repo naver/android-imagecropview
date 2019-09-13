@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="viewmodel"
+            type="com.naver.android.helloyako.imagecropsample.crop.CropViewModel"/>
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <com.naver.android.helloyako.imagecrop.view.ImageCropView
+                xmlns:imagecrop="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/imageCropView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="visible"
+                imagecrop:gridInnerColor="#66ffffff"
+                imagecrop:gridInnerStroke="1dp"
+                imagecrop:gridOuterColor="#ffffff"
+                imagecrop:gridOuterStroke="1dp"
+                imagecrop:outsideLayerColor="#99000000"
+                imagecrop:setInnerGridMode="on"
+                imagecrop:setOuterGridMode="on" />
+        </FrameLayout>
+
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/ratio11btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="1:1"
+                    android:onClick="@{() -> viewmodel.onClickRatio(1, 1)}"/>
+
+                <Button
+                    android:id="@+id/ratio34btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="3:4"
+                    android:onClick="@{() -> viewmodel.onClickRatio(3, 4)}"/>
+
+                <Button
+                    android:id="@+id/ratio43btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="4:3"
+                    android:onClick="@{() -> viewmodel.onClickRatio(4, 3)}"/>
+
+                <Button
+                    android:id="@+id/ratio169btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="16:9"
+                    android:onClick="@{() -> viewmodel.onClickRatio(16, 9)}"/>
+
+                <Button
+                    android:id="@+id/ratio916btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="9:16"
+                    android:onClick="@{() -> viewmodel.onClickRatio(9, 16)}"/>
+
+
+                <Button
+                    android:id="@+id/crop_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="crop"
+                    android:onClick="@{() -> viewmodel.onClickCrop()}"/>
+
+                <Button
+                    android:id="@+id/save_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="save"
+                    android:onClick="@{() -> viewmodel.onClickSave()}"/>
+
+                <Button
+                    android:id="@+id/restore_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:enabled="false"
+                    android:text="restore"
+                    android:onClick="@{() -> viewmodel.onClickRestore()}"/>
+            </LinearLayout>
+        </HorizontalScrollView>
+    </LinearLayout>
+</layout>

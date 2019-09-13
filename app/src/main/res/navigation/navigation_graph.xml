@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/navigation_graph"
+    app:startDestination="@id/nav_image_select">
+    <fragment
+        android:id="@+id/nav_image_select"
+        android:name="com.naver.android.helloyako.imagecropsample.imageselect.ImageSelectFragment"
+        tools:layout="@layout/fragment_image_select">
+        <action
+            android:id="@+id/action_image_to_crop"
+            app:destination="@id/nav_crop">
+            <argument
+                android:name="uri"
+                app:argType="android.net.Uri" />
+
+        </action>
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_crop"
+        android:name="com.naver.android.helloyako.imagecropsample.crop.CropFragment"
+        tools:layout="@layout/fragment_crop">
+
+        <argument
+            android:name="uri"
+            app:argType="android.net.Uri" />
+
+    </fragment>
+
+</navigation>
