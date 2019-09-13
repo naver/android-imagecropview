@@ -26,7 +26,8 @@
                 android:layout_height="wrap_content"
                 android:background="@mipmap/image_background"
                 android:gravity="center"
-                android:padding="5dp">
+                android:padding="5dp"
+                android:onClick="@{() -> viewmodel.onClickChooseRandom()}">
 
                 <ImageView
                     android:id="@+id/image"
@@ -53,21 +54,23 @@
             android:padding="10dp">
 
             <Button
-                android:id="@+id/button1"
+                android:id="@+id/choose_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:padding="10.0dip"
-                android:text="Choose Photo"></Button>
+                android:text="Choose Photo"
+                android:onClick="@{() -> viewmodel.onClickChoose()}"/>
 
             <Button
-                android:id="@+id/button2"
+                android:id="@+id/edit_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:enabled="false"
                 android:padding="10.0dip"
-                android:text="Launch Editor"></Button>
+                android:text="Launch Editor"
+                android:onClick="@{() -> viewmodel.onClickEditButton()}"/>
         </LinearLayout>
     </LinearLayout>
 </layout>

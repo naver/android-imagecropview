@@ -10,13 +10,23 @@
         tools:layout="@layout/fragment_image_select">
         <action
             android:id="@+id/action_image_to_crop"
-            app:destination="@id/nav_crop"/>
+            app:destination="@id/nav_crop">
+            <argument
+                android:name="uri"
+                app:argType="android.net.Uri" />
+
+        </action>
+
     </fragment>
 
     <fragment
         android:id="@+id/nav_crop"
         android:name="com.naver.android.helloyako.imagecropsample.crop.CropFragment"
         tools:layout="@layout/fragment_crop">
+
+        <argument
+            android:name="uri"
+            app:argType="android.net.Uri" />
 
     </fragment>
 
