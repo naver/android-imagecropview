@@ -1222,4 +1222,29 @@ public class ImageCropView extends ImageView {
     public boolean isChangingScale() {
         return isChangingScale;
     }
+
+    public float[] getPositionInfo() {
+        float[] vals = new float[9];
+        mSuppMatrix.getValues(vals);
+        return  vals;
+    }
+
+    public void applyPositionInfo(float[] values) {
+        mBitmapChanged = true;
+        applyValues(values);
+        requestLayout();
+    }
+
+    private void applyValues(float[] values) {
+        if (LOG_ENABLED) {
+            Log.i(LOG_TAG, "Matrix updated based on previous position info");
+        }
+
+        mSuppMatrix = new Matrix();
+        mSuppMatrix.setValues(values);
+
+        setImageMatrix(getImageViewMatrix());
+        postInvalidate();
+    }
+
 }
