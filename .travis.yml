@@ -16,7 +16,10 @@ notifications:
     email:
         - helloyako@gmail.com
 
-cache: false
+cache:
+   directories:
+   - $HOME/.gradle/caches/
+   - $HOME/.gradle/wrapper/
 sudo: false
 
 script:
